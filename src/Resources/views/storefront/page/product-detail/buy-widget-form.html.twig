@@ -1,0 +1,23 @@
+{% sw_extends '@Storefront/storefront/page/product-detail/buy-widget-form.html.twig' %}
+
+{% block page_product_detail_buy_container %}
+        {% for item in page.crossSellings|filter(item => item.total > 0 and item.crossSelling.active == true and item.crossSelling.name == 'Zubehör') %}
+            {% set accessories = item.getProducts() %}
+            {% set availableAccessories = accessories|filter(p => p.available) %}
+
+            {% if false and accessories is not empty %}
+            <div class="accessories-grid--wrapper text-white">
+                <div class="product-detail-configurator-group-title">Wähle dein Zubehör</div>
+                <div class="accessories-grid">
+                    {% for accessory in accessories.slice(0,2) %}
+                        {% sw_include '@Storefront/storefront/page/product-detail/buy-widget-crossselling.twig' with {
+                            'accessory': accessory,
+                            'cover': accessory.cover.media
+                        } only %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    {{ parent() }}
+{% endblock %}

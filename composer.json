@@ -1,0 +1,44 @@
+{
+    "name": "alpha/foundation",
+    "description": "Alphanauten Foundation",
+    "version": "1.0.0",
+    "type": "shopware-platform-plugin",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "alphanauten GmbH & Co. KG",
+            "homepage": "https://alphanauten.de",
+            "role": "Manufacturer"
+        }
+    ],
+    "require": {
+        "shopware/core": "^6.5",
+        "shopware/storefront": "^6.5"
+    },
+    "extra": {
+        "shopware-plugin-class": "Alpha\\Foundation\\AlphanautenFoundation",
+        "plugin-icon": "src/Resources/config/plugin.png",
+        "copyright": "(c) by alphanauten GmbH & Co. KG",
+        "label": {
+            "de-DE": "Alphanauten Foundation",
+            "en-GB": "Alphanauten Foundation"
+        },
+        "description": {
+            "de-DE": "Alphanauten Foundation",
+            "en-GB": "Alphanauten Foundation"
+        },
+        "manufacturerLink": {
+            "de-DE": "https://store.shopware.com/zenit-design.html",
+            "en-GB": "https://store.shopware.com/en/zenit-design.html"
+        },
+        "supportLink": {
+            "de-DE": "https://help.zenit.design",
+            "en-GB": "https://help.zenit.design"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alpha\\Foundation\\": "src/"
+        }
+    }
+}

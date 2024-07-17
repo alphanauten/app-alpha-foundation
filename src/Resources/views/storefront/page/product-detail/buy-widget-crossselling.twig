@@ -1,0 +1,98 @@
+{% block page_product_detail_buy_widget_crossselling %}
+    <div class="card" data-accessory="true">
+        {% block component_product_box_badges %}
+            {% sw_include '@Storefront/storefront/component/product/card/badges.html.twig' with {
+                product: accessory
+            } %}
+        {% endblock %}
+
+        {% set id = accessory.id %}
+        {% set displayMode = 'standard' %}
+
+        {% block component_product_box_image_link %}
+            <a href="{{ seoUrl('frontend.detail.page', { 'productId': id }) }}"
+               title="{{ name }}"
+               class="product-image-link is-{{ displayMode }}">
+                {% block component_product_box_image_link_inner %}
+                    {% if cover.url %}
+                        {% set attributes = {
+                            'class': 'product-image is-'~displayMode,
+                            'alt': (cover.translated.alt ?: name),
+                            'title': (cover.translated.title ?: name),
+                            'loading': 'lazy'
+                        } %}
+
+                        {% if displayMode == 'cover' or displayMode == 'contain' %}
+                            {% set attributes = attributes|merge({ 'data-object-fit': displayMode }) %}
+                        {% endif %}
+
+                        {% block component_product_box_image_thumbnail %}
+                            {% sw_thumbnails 'product-image-thumbnails' with {
+                                media: cover,
+                                sizes: sizes
+                            } %}
+                        {% endblock %}
+                    {% else %}
+                        {% block component_product_box_image_placeholder %}
+                            <div class="product-image-placeholder">
+                                {% sw_icon 'placeholder' style {
+                                    'size': 'fluid'
+                                } %}
+                            </div>
+                        {% endblock %}
+                    {% endif %}
+                {% endblock %}
+            </a>
+        {% endblock %}
+
+        <div class="card-body">
+            <p class="card-text"><strong class="text-uppercase">{{ accessory.translated.name }}</strong><br />
+                {% for variation in accessory.variation %}
+                    {{ variation.option }}
+                    {% if accessory.variation|last != variation %}
+                        {{ " | " }}
+                    {% endif %}
+                {% endfor %}
+            </p>
+            {% sw_include '@Storefront/storefront/component/product/card/price-unit.html.twig' with {
+                product: accessory
+            } %}
+        </div>
+        <button type="button" class="btn btn-block">
+            {% sw_icon 'plus' %}
+            <span class="hover" aria-hidden="true">{% sw_icon 'minus' %}</span>
+        </button>
+
+        {% block page_product_detail_buy_accessories_quantity_container %}
+            <input
+                    disabled
+                    type="hidden"
+                    name="lineItems[{{ accessory.id }}][quantity]"
+                    value="{{ accessory.minPurchase }}"
+            />
+        {% endblock %}
+
+        {% block page_product_detail_buy_accessories_data %}
+            <input type="hidden"
+                   disabled
+                   name="lineItems[{{ accessory.id }}][id]"
+                   value="{{ accessory.id }}">
+            <input type="hidden"
+                   disabled
+                   name="lineItems[{{ accessory.id }}][type]"
+                   value="product">
+            <input type="hidden"
+                   disabled
+                   name="lineItems[{{ accessory.id }}][referencedId]"
+                   value="{{ accessory.id }}">
+            <input type="hidden"
+                   disabled
+                   name="lineItems[{{ accessory.id }}][stackable]"
+                   value="1">
+            <input type="hidden"
+                   disabled
+                   name="lineItems[{{ accessory.id }}][removable]"
+                   value="1">
+        {% endblock %}
+    </div>
+{% endblock %}
