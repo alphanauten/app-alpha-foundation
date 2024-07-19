@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Alpha\Foundation\Core\Content\Product;
+namespace AlphaFoundation\Core\Content\Product;
 
 use Shopware\Core\Content\Product\Aggregate\ProductFeatureSet\ProductFeatureSetDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductFeatureSet\ProductFeatureSetEntity;

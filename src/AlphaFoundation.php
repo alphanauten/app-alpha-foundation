@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Alpha\Foundation;
+namespace AlphaFoundation;
 
 use Shopware\Core\Framework\Plugin;
 

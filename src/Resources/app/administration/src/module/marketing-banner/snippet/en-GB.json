@@ -1,0 +1,14 @@
+{
+  "marketing-banner": {
+    "general": {
+      "mainMenuItemGeneral": "Marketing banner",
+      "descriptionTextModule": "Description for banner"
+    },
+    "list": {
+      "addButtonText": "Add banner",
+      "columns": {
+        "name": "Name"
+      }
+    }
+  }
+}

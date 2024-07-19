@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alpha\Foundation\Core\Content\Product;
+namespace AlphaFoundation\Core\Content\Product;
 
 use Shopware\Core\Content\Product\Aggregate\ProductFeatureSet\ProductFeatureSetEntity;
 use Shopware\Core\Content\Product\ProductDefinition;
