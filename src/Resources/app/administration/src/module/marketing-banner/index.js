@@ -1,33 +1,35 @@
 const { Component, Module } = Shopware;
 
-Component.register('alphanauten-marketing-banner-list', () => import('./page/marketing-banner-list'));
+import './page/marketing-banner-list';
+import './page/marketing-banner-detail';
+import './page/marketing-banner-create';
+// Component.register('alphanauten-marketing-banner-list', () => import('./page/marketing-banner-list'));
+// Component.register('alphanauten-marketing-banner-detail', () => import('./page/marketing-banner-detail'));
+// Component.extend(() => import('./page/marketing-banner-create'), 'alphanauten-marketing-banner-detail');
 
-Module.register('alphanauten-marketing-banner', {
+Module.register('marketing-banner', {
     type: 'plugin',
-    name: 'MarketingBanner',
+    name: 'marketing-banner',
     title: 'marketing-banner.general.mainMenuItemGeneral',
     description: 'marketing-banner.general.descriptionTextModule',
 
     routes: {
-        list: {
-            component: 'alphanauten-marketing-banner-list',
-            path: 'list'
+        index: {
+            component: 'marketing-banner-list',
+            path: 'index'
         },
         detail: {
-            component: 'alphanauten-marketing-banner-detail',
-            path: 'detail/:id',
-            props: {
-                default: (route) => ({ marketingBannerId: route.params.id }),
-            },
+            component: 'marketing-banner-detail',
+            path: 'detail/:id?',
             meta: {
-                parentPath: 'alphanauten.marketing.banner.list'
+                parentPath: 'marketing.banner.index'
             }
         },
         create: {
-            component: 'alphanauten-marketing-banner-detail',
+            component: 'marketing-banner-create',
             path: 'create',
             meta: {
-                parentPath: 'alphanauten.marketing.banner.list'
+                parentPath: 'marketing.banner.index'
             }
         },
     },
@@ -35,7 +37,7 @@ Module.register('alphanauten-marketing-banner', {
     navigation: [{
         label: 'marketing-banner.general.mainMenuItemGeneral',
         parent: 'sw-marketing',
-        path: 'alphanauten.marketing.banner.list',
+        path: 'marketing.banner.index',
         position: 100
     }]
 });

@@ -32,14 +32,19 @@ class MarketingBannerEntity extends Entity
     protected string $bannerType;
 
     /**
-     * @var CategoryCollection|null
+     * @var array|bool|float|int|string|null
      */
-    protected ?CategoryCollection $categories;
-
-    /**
-     * @var RuleCollection|null
-     */
-    protected ?RuleCollection $rules = null;
+    protected $categories;
+//
+//    /**
+//     * @var CategoryCollection|null
+//     */
+//    protected ?CategoryCollection $categories;
+//
+//    /**
+//     * @var RuleCollection|null
+//     */
+//    protected ?RuleCollection $rules = null;
 
     /**
      * @var \DateTimeInterface|null
@@ -97,15 +102,15 @@ class MarketingBannerEntity extends Entity
         $this->bannerType = $bannerType;
     }
 
-    public function getCategories(): ?CategoryCollection
-    {
-        return $this->categories;
-    }
-
-    public function setCategories(?CategoryCollection $categories)
-    {
-        $this->categories = $categories;
-    }
+//    public function getCategories(): ?CategoryCollection
+//    {
+//        return $this->categories;
+//    }
+//
+//    public function setCategories(?CategoryCollection $categories)
+//    {
+//        $this->categories = $categories;
+//    }
 
     public function setRules(?RuleCollection $rules): void
     {
@@ -134,5 +139,15 @@ class MarketingBannerEntity extends Entity
     public function setValidUntil(\DateTimeInterface $validUntil)
     {
         $this->validUntil = $validUntil;
+    }
+
+    public function getCategories(): float|array|bool|int|string|null
+    {
+        return $this->categories;
+    }
+
+    public function setCategories(float|array|bool|int|string|null $categories): void
+    {
+        $this->categories = $categories;
     }
 }

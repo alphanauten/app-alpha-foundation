@@ -1,0 +1,31 @@
+{% block alpha_rule_select %}
+    <div class="alpha-rule-select">
+        {% block a %}
+            <sw-entity-many-to-many-select
+                    v-bind="$attrs"
+                    ref="ruleSelect"
+                    class="alpha-rule-select"
+                    :entity-collection="collection ? collection : []"
+                    :local-mode="localMode"
+                    v-on="$listeners"
+                    @update:entityCollection="onChange">
+
+                <template #before-item-list>
+                    <li class="sw-select-result sw-banner-rule-select__add-new-rule"
+                        @click="showRuleModal = true">
+                        {{ $tc('floating-button.detail.labelAddNewRule') }}
+                    </li>
+                </template>
+            </sw-entity-many-to-many-select>
+        {% endblock %}
+
+        {% block b %}
+            <sw-rule-modal
+                    v-if="showRuleModal"
+                    @save="onSaveRule"
+                    @modal-close="showRuleModal = false"
+                    :allowed-rule-scopes="ruleScope">
+            </sw-rule-modal>
+        {% endblock %}
+    </div>
+{% endblock %}

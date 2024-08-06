@@ -1,9 +1,10 @@
 import template from './marketing-banner-list.html.twig';
 import './marketing-banner-list.scss';
 
-const {Criteria} = Shopware.Data;
+const { Component } = Shopware;
+const { Criteria } = Shopware.Data;
 
-export default {
+Component.register('marketing-banner-list', {
     template,
 
     inject: [
@@ -12,27 +13,20 @@ export default {
 
     data() {
         return {
-            entities: null,
-            total: 0,
+            repository: null,
+            banners: null
+        };
+    },
+
+    metaInfo() {
+        return {
+            title: this.$createTitle()
         };
     },
 
     computed: {
         columns() {
-            return [
-                {
-                    property: 'name',
-                    dataIndex: 'name',
-                    label: this.$tc('product-guide.list.columns.name'),
-                    routerLink: 'alphanauten.marketing.banner.detail',
-                    allowResize: true,
-                    primary: true
-                }
-            ];
-        },
-
-        entityRepository() {
-            return this.repositoryFactory.create('marketing_banner');
+            return this.getColumns();
         }
     },
 
@@ -42,16 +36,42 @@ export default {
 
     methods: {
         createdComponent() {
-            this.loadTypes();
+            this.repository = this.repositoryFactory.create('alpha_marketing_banner');
+
+            this.repository.search(new Criteria(), Shopware.Context.api).then((result) => {
+                this.banners = result;
+            });
         },
 
-        loadTypes() {
-            this.entityRepository
-                .search(new Criteria(), Shopware.Context.api)
-                .then((result) => {
-                    this.total = result.total;
-                    this.entities = result;
-                });
-        },
+        getColumns() {
+            return [{
+                property: 'active',
+                label: this.$tc('marketing-banner.list.columnActive'),
+                inlineEdit: 'boolean',
+                allowResize: true
+            }, {
+                property: 'name',
+                label: this.$tc('marketing-banner.list.columnName'),
+                routerLink: 'marketing.banner.detail',
+                inlineEdit: 'string',
+                allowResize: true,
+                primary: true
+            }, {
+                property: 'description',
+                label: this.$tc('marketing-banner.list.columnDescription'),
+                inlineEdit: 'string',
+                allowResize: true,
+            }, {
+                property: 'validFrom',
+                label: this.$tc('marketing-banner.list.validFrom'),
+                inlineEdit: 'date',
+                allowResize: true,
+            }, {
+                property: 'validUntil',
+                label: this.$tc('marketing-banner.list.validUntil'),
+                inlineEdit: 'date',
+                allowResize: true,
+            }];
+        }
     }
-}
+});

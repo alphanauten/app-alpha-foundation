@@ -1,8 +1,8 @@
 {% block alpha_marketing_banner_list %}
-    <sw-page class="alphanauten-marketing-banner-list">
+    <sw-page class="alpha-marketing-banner-list">
         {% block alpha_marketing_banner_list_smart_bar_actions %}
             <template #smart-bar-actions>
-                <sw-button variant="primary" :router-link="{ name: 'alphanauten.marketing.banner.create' }">
+                <sw-button variant="primary" :router-link="{ name: 'marketing.banner.create' }">
                     {{ $tc('marketing-banner.list.addButtonText') }}
                 </sw-button>
             </template>
@@ -11,13 +11,13 @@
         <template #content>
             {% block alpha_marketing_banner_list_content %}
                 <sw-entity-listing
-                        v-if="entities"
-                        :items="entities"
-                        :repository="entityRepository"
+                        v-if="banners"
+                        :items="banners"
+                        :repository="repository"
                         :show-selection="false"
                         :allow-inline-edit="false"
                         :columns="columns"
-                >
+                        detail-route="marketing.banner.detail">
                 </sw-entity-listing>
             {% endblock %}
         </template>
