@@ -20,5 +20,13 @@
         <service id="AlphaFoundation\Core\Content\MarketingBanner\MarketingBannerDefinition">
             <tag name="shopware.entity.definition" entity="marketing_banner" />
         </service>
+
+        <service id="AlphaFoundation\Core\Content\Rule\RuleExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\MarketingBanner\Aggregate\MarketingBannerRule\MarketingBannerRuleDefinition">
+            <tag name="shopware.entity.definition" entity="marketing_banner_rule" />
+        </service>
     </services>
 </container>

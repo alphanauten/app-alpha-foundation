@@ -1,9 +1,9 @@
 import template from './marketing-banner-detail.html.twig';
 import './marketing-banner-detail.scss';
 
-const {Component, Mixin, Context} = Shopware;
-const {mapPropertyErrors} = Shopware.Component.getComponentHelper();
-const {Criteria, EntityCollection} = Shopware.Data;
+const { Component, Mixin, Context } = Shopware;
+const { mapPropertyErrors } = Shopware.Component.getComponentHelper();
+const { Criteria, EntityCollection } = Shopware.Data;
 
 
 Component.register('marketing-banner-detail', {
@@ -51,7 +51,7 @@ Component.register('marketing-banner-detail', {
 
 
         bannerRepository() {
-            return this.repositoryFactory.create('alpha_marketing_banner');
+            return this.repositoryFactory.create('marketing_banner');
         },
 
         categoryRepository() {
@@ -63,19 +63,15 @@ Component.register('marketing-banner-detail', {
             return criteria;
         },
 
+        ruleFilter() {
+            const criteria = new Criteria();
+            criteria.setLimit(null);
+            return criteria;
+        },
 
-        // entityFilter() {
-        //     const criteria = new Criteria();
-        //     // criteria.setIds(this.banner.categories);
-        //     return criteria;
-        // },
-
-        // categories() {
-        //     if (this.banner?.categories && this.banner.categories.length > 0) {
-        //         return this.banner.categories;
-        //     }
-        //     return null;
-        // },
+        isRuleSelectDisabled() {
+            return false;
+        }
     },
 
     created() {
@@ -83,21 +79,6 @@ Component.register('marketing-banner-detail', {
     },
 
     methods: {
-        // createdComponent() {
-        //     this.repository = this.repositoryFactory.create('alpha_marketing_banner');
-        //     this.createCategoryCollection();
-        //     this.getBanner();
-        // },
-        //
-        // createCategoryCollection() {
-        //     this.categoryRepository
-        //         .search(this.entityFilter, Shopware.Context.api)
-        //         .then(result => {
-        //             this.categoriesCollection = result;
-        //         });
-        // },
-
-
         async createdComponent() {
             this.isLoading = true;
 
@@ -126,7 +107,7 @@ Component.register('marketing-banner-detail', {
             criteria.setIds(categories);
 
             return await this.categoryRepository
-                .search(criteria, Object.assign({}, Shopware.Context.api, {inheritance: true}))
+                .search(criteria, Object.assign({}, Shopware.Context.api, { inheritance: true }))
                 .then((result) => {
                     this.categoriesCollection = result;
                     console.log('categoriesCollection', this.categoriesCollection)
@@ -156,39 +137,11 @@ Component.register('marketing-banner-detail', {
             console.log('this.banner.categories', this.banner.categories)
         },
 
-
-        // getBanner() {
-        //     console.log('b', this.repository);
-        //     console.log('c', this.$route.params.id);
-        //     this.repository.get(this.$route.params.id, Shopware.Context.api).then((entity) => {
-        //         console.log(entity)
-        //         this.banner = entity;
-        //     });
-        // },
-
         onCancel() {
-            this.$router.push({name: 'marketing.banner.index'});
+            this.$router.push({ name: 'marketing.banner.index' });
         },
 
         onSave() {
-            // this.isSaveSuccessful = false;
-            // this.isLoading = true;
-            //
-            // this.repository.save(this.banner, Shopware.Context.api).then(() => {
-            //     this.isSaveSuccessful = true;
-            //     this.createNotificationSuccess({
-            //         title: this.$tc('marketing-banner.detail.titleSaveSuccess'),
-            //         message: this.$tc('marketing banner.detail.messageSaveSuccess')
-            //     });
-            // }).catch((exception) => {
-            //     this.createNotificationError({
-            //         message: this.$tc(
-            //             'global.notification.notificationSaveErrorMessageRequiredFieldsInvalid',
-            //         ),
-            //     });
-            // }).finally(() => {
-            //     this.isLoading = false;
-            // });
             this.isSaveSuccessful = false;
             this.isLoading = true;
 

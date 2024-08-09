@@ -6,10 +6,10 @@
                     {{ $tc('marketing-banner.detail.cancelButtonText') }}
                 </sw-button>
                 <sw-button
-                        :is-loading="isLoading"
-                        v-if="banner"
-                        @click="onSave"
-                        variant="primary">
+                    :is-loading="isLoading"
+                    v-if="banner"
+                    @click="onSave"
+                    variant="primary">
                     {{ $tc('marketing-banner.detail.saveButtonText') }}
                 </sw-button>
             </sw-button-group>
@@ -18,7 +18,6 @@
         <template #content>
             <sw-card-view>
                 <sw-card position-identifier="marketing-banner-detail-name" v-if="banner"
-                         :title="$tc('marketing-banner.detail.nameAndDescriptionLabel')"
                          :is-loading="isLoading" :large="false" :hero="false">
                     <sw-text-field v-model:value="banner.name"
                                    name="marketingBannerName"
@@ -34,65 +33,32 @@
                                        name="marketingBannerActive"></sw-checkbox-field>
                 </sw-card>
 
-                <sw-card position-identifier="marketing-banner-detail-type" v-if="banner" :large="false" :hero="false"
-                         :title="$tc('marketing-banner.detail.bannerTypeLabel')">
+                <sw-card position-identifier="marketing-banner-detail-type" v-if="banner" :large="false" :hero="false">
                     <sw-single-select v-model:value="banner.bannerType"
                                       :label="$tc('marketing-banner.detail.bannerTypeLabel')"
                                       :options="bannerTypeSelect"
-                                      :placeholder="$tc('marketing-banner.detail.bannerTypePlaceholder')"
                                       :error="bannerTypeError"
                                       required>
                     </sw-single-select>
 
                     <sw-category-tree-field v-if="banner.bannerType === 'category'"
-                                            :label="$tc('marketing-banner.detail.label.categoryIds')"
+                                            :label="$tc('marketing-banner.detail.categoriesLabel')"
                                             :categories-collection="categoriesCollection"
                                             :category-criteria="categoryCriteria"
                                             @selection-add="onSelectionAdd"
                                             @selection-remove="onSelectionRemove"/>
-
-                    {#                    <sw-inherit-wrapper #}
-                    {#                            v-if="banner.bannerType === 'category'" #}
-                    {#                            v-model:value="banner.categories" #}
-                    {#                            :has-parent="false" #}
-                    {#                            :inherited-value="banner.categories" #}
-                    {#                            is-association> #}
-                    {#                        <template #content="{ currentValue }"> #}
-
-                    {#                            <sw-category-tree-field #}
-                    {#                                    :label="$tc('marketing-banner.detail.categoriesLabel')" #}
-                    {#                                    :categoriesCollection="currentValue ? currentValue : []" #}
-                    {#                                    class="sw-product-detail__select-category" #}
-                    {#                                    :disabled="false" #}
-                    {#                                    :placeholder="$tc('marketing-banner.detail.categoriesPlaceholder')"> #}
-                    {#                            </sw-category-tree-field> #}
-                    {#                        </template> #}
-                    {#                    </sw-inherit-wrapper> #}
-
-
-                    {#                    <sw-category-tree-field #}
-                    {#                            v-if="banner.bannerType === 'category'" #}
-                    {#                            :label="$tc('marketing-banner.detail.categoriesLabel')" #}
-                    {#                            :criteria="entityFilter" #}
-                    {#                            :placeholder="$tc('marketing-banner.detail.categoriesPlaceholder')" #}
-                    {#                            :categories-collection="categoriesCollection" #}
-                    {#                            @selection-add="replaceCategorySelection" #}
-                    {#                            @selection-remove="removeCategorySelection" #}
-                    {#                    /> #}
                 </sw-card>
 
-                {#                <sw-card position-identifier="marketing-banner-detail-rules"> #}
-                {#                    <alpha-rule-select #}
-                {#                            v-if="banner" #}
-                {#                            :label="$tc('marketing-banner.detail.bannerRules')" #}
-                {#                            :placeholder="$tc('marketing-banner.detail.bannerRulesPlaceholder')" #}
-                {#                            :criteria="ruleFilter" #}
-                {#                            v-model:collection="banner.rules" #}
-                {#                            :rule-scope="['global', 'cart', 'checkout', 'lineItem']" #}
-                {#                            :help-text="$tc('marketing-banner.detail.helpText.rules')" #}
-                {#                            :disabled="isRuleSelectDisabled"> #}
-                {#                    </alpha-rule-select> #}
-                {#                </sw-card> #}
+                <sw-card position-identifier="marketing-banner-detail-rules">
+                    <alpha-rule-select
+                        v-if="banner"
+                        :label="$tc('marketing-banner.detail.bannerRules')"
+                        :criteria="ruleFilter"
+                        v-model:collection="banner.rules"
+                        :rule-scope="['global', 'cart', 'checkout', 'lineItem']"
+                        :disabled="isRuleSelectDisabled">
+                    </alpha-rule-select>
+                </sw-card>
 
                 <sw-card position-identifier="marketing-banner-detail-dates">
                     <sw-datepicker date-type="datetime-local"

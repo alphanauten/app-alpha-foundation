@@ -2,9 +2,9 @@
 
 namespace AlphaFoundation\Core\Content\MarketingBanner;
 
+use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Rule\RuleCollection;
 
 class MarketingBannerEntity extends Entity
@@ -34,17 +34,12 @@ class MarketingBannerEntity extends Entity
     /**
      * @var array|bool|float|int|string|null
      */
-    protected $categories;
-//
-//    /**
-//     * @var CategoryCollection|null
-//     */
-//    protected ?CategoryCollection $categories;
-//
-//    /**
-//     * @var RuleCollection|null
-//     */
-//    protected ?RuleCollection $rules = null;
+    protected ?CategoryCollection $categories = null;
+
+    /**
+     * @var RuleCollection|null
+     */
+    protected ?RuleCollection $rules = null;
 
     /**
      * @var \DateTimeInterface|null
@@ -101,16 +96,6 @@ class MarketingBannerEntity extends Entity
     {
         $this->bannerType = $bannerType;
     }
-
-//    public function getCategories(): ?CategoryCollection
-//    {
-//        return $this->categories;
-//    }
-//
-//    public function setCategories(?CategoryCollection $categories)
-//    {
-//        $this->categories = $categories;
-//    }
 
     public function setRules(?RuleCollection $rules): void
     {

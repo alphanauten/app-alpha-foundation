@@ -18,6 +18,17 @@
                         :allow-inline-edit="false"
                         :columns="columns"
                         detail-route="marketing.banner.detail">
+                    {% block alpha_marketing_banner_list_grid_columns_valid_from %}
+                        <template #column-validFrom="{ item }">
+                            {{ dateFilter(item.validFrom, { hour: undefined, minute: undefined }) }}
+                        </template>
+                    {% endblock %}
+
+                    {% block alpha_marketing_banner_list_list_grid_columns_valid_until %}
+                        <template #column-validUntil="{ item }">
+                            {{ dateFilter(item.validUntil, { hour: undefined, minute: undefined }) }}
+                        </template>
+                    {% endblock %}
                 </sw-entity-listing>
             {% endblock %}
         </template>

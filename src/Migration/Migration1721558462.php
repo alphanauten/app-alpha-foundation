@@ -23,9 +23,8 @@ class Migration1721558462 extends MigrationStep
      */
     public function update(Connection $connection): void
     {
-
         $connection->executeStatement('
-            CREATE TABLE IF NOT EXISTS `alpha_marketing_banner` (
+            CREATE TABLE IF NOT EXISTS `marketing_banner` (
                 `id` BINARY(16) NOT NULL,
                 `name` VARCHAR(255) NOT NULL,
                 `description` VARCHAR(255) NOT NULL,
@@ -39,5 +38,17 @@ class Migration1721558462 extends MigrationStep
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             ');
+
+        $connection->executeStatement('
+            CREATE TABLE IF NOT EXISTS `marketing_banner_rule` (
+                `banner_id` BINARY(16) NOT NULL,
+                `rule_id` BINARY(16) NOT NULL,
+                PRIMARY KEY (`banner_id`, `rule_id`),
+                CONSTRAINT `fk.marketing_banner_rule.banner_id` FOREIGN KEY (`banner_id`)
+                  REFERENCES `marketing_banner` (id) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT `fk.marketing_banner_rule.rule_id` FOREIGN KEY (`rule_id`)
+                  REFERENCES `rule` (id) ON DELETE CASCADE ON UPDATE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+       ');
     }
 }
