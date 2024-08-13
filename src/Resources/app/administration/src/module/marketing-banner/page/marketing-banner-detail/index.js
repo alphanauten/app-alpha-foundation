@@ -82,7 +82,7 @@ Component.register('marketing-banner-detail', {
         async createdComponent() {
             this.isLoading = true;
 
-            this.repository = this.bannerRepository;
+            this.repository = this.repositoryFactory.create('marketing_banner');
             this.categoriesCollection = new EntityCollection('/category', 'category', Shopware.Context.api);
 
             await this.getBanner();
@@ -93,7 +93,6 @@ Component.register('marketing-banner-detail', {
 
         async getBanner() {
             this.banner = await this.repository.get(this.$route.params.id, Context.api);
-            console.log('banner', this.banner)
         },
 
         async loadCategories() {
@@ -110,7 +109,6 @@ Component.register('marketing-banner-detail', {
                 .search(criteria, Object.assign({}, Shopware.Context.api, { inheritance: true }))
                 .then((result) => {
                     this.categoriesCollection = result;
-                    console.log('categoriesCollection', this.categoriesCollection)
                 });
         },
 
@@ -120,7 +118,6 @@ Component.register('marketing-banner-detail', {
             }
 
             this.banner.categories.push(category.id);
-            console.log('this.banner.categories', this.banner.categories)
         },
 
         onSelectionRemove(category) {
@@ -133,8 +130,6 @@ Component.register('marketing-banner-detail', {
             if (index !== -1) {
                 this.banner.categories.splice(index, 1);
             }
-
-            console.log('this.banner.categories', this.banner.categories)
         },
 
         onCancel() {
@@ -150,7 +145,6 @@ Component.register('marketing-banner-detail', {
                 .then(() => {
                     this.getBanner();
                     this.isSaveSuccessful = true;
-                    console.log('save')
                 })
                 .catch((exception) => {
                     this.createNotificationError({

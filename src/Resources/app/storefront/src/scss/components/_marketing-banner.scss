@@ -1,0 +1,13 @@
+.product-detail-marketing-banner {
+    display: flex;
+    padding: 10px;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    &__image {
+        img {
+            max-width: 80px;
+        }
+    }
+}

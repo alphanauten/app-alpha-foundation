@@ -41,12 +41,34 @@
                                       required>
                     </sw-single-select>
 
-                    <sw-category-tree-field v-if="banner.bannerType === 'category'"
-                                            :label="$tc('marketing-banner.detail.categoriesLabel')"
+                    <sw-category-tree-field :label="$tc('marketing-banner.detail.categoriesLabel')"
                                             :categories-collection="categoriesCollection"
                                             :category-criteria="categoryCriteria"
                                             @selection-add="onSelectionAdd"
                                             @selection-remove="onSelectionRemove"/>
+                </sw-card>
+
+                <sw-card position-identifier="marketing-banner-detail-content" v-if="banner">
+                    <sw-text-editor v-model:value="banner.text"
+                                    :label="$tc('marketing-banner.detail.contentText')"
+                    />
+
+                    <sw-media-field v-model:value="banner.mediaId"
+                                    :label="$tc('marketing-banner.detail.contentImage')"></sw-media-field>
+
+                    <sw-colorpicker v-model:value="banner.backgroundColor"
+                                    :label="$tc('marketing-banner.detail.backgroundColor')"
+                                    name="marketingBannerBackgroundColor"
+                                    color-output="hex"></sw-colorpicker>
+
+                    <sw-colorpicker v-model:value="banner.textColor" :label="$tc('marketing-banner.detail.textColor')"
+                                    name="marketingBannerTextColor"
+                                    color-output="hex"></sw-colorpicker>
+
+                    <sw-text-field v-model:value="banner.border"
+                                   :label="$tc('marketing-banner.detail.border')"
+                                   name="marketingBannerBorder"></sw-text-field>
+
                 </sw-card>
 
                 <sw-card position-identifier="marketing-banner-detail-rules">

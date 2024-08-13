@@ -11,16 +11,21 @@ use Shopware\Core\Content\Product\ProductEvents;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelEntityLoadedEvent;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
+use Shopware\Storefront\Page\Product\ProductPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ProductSubscriber implements EventSubscriberInterface
 {
+    public const PRODUCT_BANNER_TYPE = 'product';
+
     public function __construct(
         private readonly SalesChannelRepository $productRepository,
         private readonly EntityRepository      $featureSetRepository,
-        private readonly ProductFeatureBuilder $productFeatureBuilder
+        private readonly ProductFeatureBuilder $productFeatureBuilder,
+        private readonly EntityRepository $marketingBannerRepository
     ) {
     }
 
@@ -34,6 +39,7 @@ class ProductSubscriber implements EventSubscriberInterface
             ProductEvents::PRODUCT_LISTING_CRITERIA => 'extendListingCriteria',
             'sales_channel.'.ProductEvents::PRODUCT_LOADED_EVENT => 'onProductsLoaded',
             ProductIndexerEvent::class => 'onProductIndexerEvent',
+            ProductPageLoadedEvent::class => 'onProductPageLoaded'
         ];
     }
 
@@ -81,5 +87,19 @@ class ProductSubscriber implements EventSubscriberInterface
     public function onProductIndexerEvent(ProductIndexerEvent $event)
     {
 
+    }
+
+    public function onProductPageLoaded(ProductPageLoadedEvent $event)
+    {
+        $page = $event->getPage();
+        $marketingBanners = $this->marketingBannerRepository->search($this->buildProductMarketingBannerCriteria(), $event->getContext())->getEntities();
+        $page->assign(['alphaMarketingBanners'=>$marketingBanners]);
+    }
+
+    protected function buildProductMarketingBannerCriteria(): Criteria
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('bannerType', self::PRODUCT_BANNER_TYPE));
+        return $criteria;
     }
 }

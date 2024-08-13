@@ -3,6 +3,7 @@
 namespace AlphaFoundation\Core\Content\MarketingBanner;
 
 use Shopware\Core\Content\Category\CategoryCollection;
+use Shopware\Core\Content\Media\MediaEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\Content\Rule\RuleCollection;
@@ -32,9 +33,39 @@ class MarketingBannerEntity extends Entity
     protected string $bannerType;
 
     /**
-     * @var array|bool|float|int|string|null
+     * @var array<string>
      */
-    protected ?CategoryCollection $categories = null;
+    protected array $categories = [];
+
+    /**
+     * @var string
+     */
+    protected string $text = "";
+
+    /**
+     * @var string|null
+     */
+    protected ?string $mediaId = null;
+
+    /**
+     * @var MediaEntity|null
+     */
+    protected ?MediaEntity $media = null;
+
+    /**
+     * @var string
+     */
+    protected string $backgroundColor;
+
+    /**
+     * @var string
+     */
+    protected string $textColor;
+
+    /**
+     * @var string
+     */
+    protected string $border;
 
     /**
      * @var RuleCollection|null
@@ -97,6 +128,36 @@ class MarketingBannerEntity extends Entity
         $this->bannerType = $bannerType;
     }
 
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function setText(string $text): void
+    {
+        $this->name = $text;
+    }
+
+    public function getMediaId(): string
+    {
+        return $this->mediaId;
+    }
+
+    public function setMediaId(string $mediaId): void
+    {
+        $this->mediaId = $mediaId;
+    }
+
+    public function getMedia(): ?MediaEntity
+    {
+        return $this->media;
+    }
+
+    public function setMedia(?MediaEntity $media): void
+    {
+        $this->media = $media;
+    }
+
     public function setRules(?RuleCollection $rules): void
     {
         $this->rules = $rules;
@@ -126,12 +187,12 @@ class MarketingBannerEntity extends Entity
         $this->validUntil = $validUntil;
     }
 
-    public function getCategories(): float|array|bool|int|string|null
+    public function getCategories(): string|array
     {
         return $this->categories;
     }
 
-    public function setCategories(float|array|bool|int|string|null $categories): void
+    public function setCategories(array|string $categories): void
     {
         $this->categories = $categories;
     }

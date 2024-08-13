@@ -26,7 +26,12 @@
       "categoriesLabel": "Categories",
       "bannerRules": "Rules",
       "labelValidFrom": "Valid from",
-      "labelValidUntil": "Valid until"
+      "labelValidUntil": "Valid until",
+      "contentText": "Text",
+      "contentImage": "Image",
+      "backgroundColor": "Background color",
+      "textColor": "Text color",
+      "border": "Border"
     }
   }
 }
