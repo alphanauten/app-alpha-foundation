@@ -16,7 +16,7 @@
         "shopware/storefront": "^6.5"
     },
     "extra": {
-        "shopware-plugin-class": "Alpha\\Foundation\\AlphanautenFoundation",
+        "shopware-plugin-class": "AlphaFoundation\\AlphaFoundation",
         "plugin-icon": "src/Resources/config/plugin.png",
         "copyright": "(c) by alphanauten GmbH & Co. KG",
         "label": {
@@ -38,7 +38,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Alpha\\Foundation\\": "src/"
+            "AlphaFoundation\\": "src/"
         }
     }
 }

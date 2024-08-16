@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Alpha\Foundation\Subscriber;
+namespace AlphaFoundation\Subscriber;
 
-use Alpha\Foundation\Core\Content\Product\ProductFeatureBuilder;
+use AlphaFoundation\Core\Content\Product\ProductFeatureBuilder;
 use Shopware\Core\Content\Product\Events\ProductListingCriteriaEvent;
 use Shopware\Core\Content\Product\Events\ProductListingResultEvent;
 use Shopware\Core\Content\Product\ProductEvents;

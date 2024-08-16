@@ -1,0 +1,34 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget.html.twig' %}
+
+{% block buy_widget_buy_form %}
+    {% if page.alphaMarketingBanners %}
+        {% set activeCategoryId = page.header.navigation.active.id %}
+
+        {% for banner in page.alphaMarketingBanners %}
+            {% set bannerCategories = banner.categories %}
+
+            {% for category in bannerCategories %}
+                {% if category == activeCategoryId %}
+                    {% set bannerBackgroundColor = banner.backgroundColor %}
+                    {% set bannerTextColor = banner.textColor %}
+                    {% set bannerBorder = banner.border %}
+                    <div class="product-detail-marketing-banner"
+                         style="{% if bannerBackgroundColor %}background-color: {{ bannerBackgroundColor }};{% endif %}
+                             {% if bannerBorder %}border: {{ bannerBorder }};{% endif %}
+                             {% if bannerTextColor %}color: {{ bannerTextColor }};{% endif %}">
+                        {% if banner.media %}
+                            <div class="product-detail-marketing-banner__image">
+                                <img src="{{ banner.media.url }}" alt="">
+                            </div>
+                        {% endif %}
+                        <div class="product-detail-marketing-banner__text">
+                            {{ banner.text|raw }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

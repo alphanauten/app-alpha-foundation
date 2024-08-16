@@ -1,0 +1,37 @@
+{
+  "marketing-banner": {
+    "general": {
+      "mainMenuItemGeneral": "Marketing banner",
+      "descriptionTextModule": "Description for banner"
+    },
+    "list": {
+      "addButtonText": "Add banner",
+      "columns": {
+        "name": "Name",
+        "active": "Active",
+        "description": "Description",
+        "validFrom": "Valid from",
+        "validUntil": "Valid until"
+      }
+    },
+    "detail": {
+      "cancelButtonText": "Cancel",
+      "saveButtonText": "Save",
+      "nameLabel": "Name",
+      "descriptionLabel": "Description",
+      "activeLabel": "Active",
+      "bannerTypeLabel": "Type",
+      "bannerTypeCategory": "Category",
+      "bannerTypeProduct": "Product",
+      "categoriesLabel": "Categories",
+      "bannerRules": "Rules",
+      "labelValidFrom": "Valid from",
+      "labelValidUntil": "Valid until",
+      "contentText": "Text",
+      "contentImage": "Image",
+      "backgroundColor": "Background color",
+      "textColor": "Text color",
+      "border": "Border"
+    }
+  }
+}

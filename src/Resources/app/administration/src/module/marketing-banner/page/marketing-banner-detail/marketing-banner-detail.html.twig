@@ -1,0 +1,108 @@
+{% block alpha_marketing_banner_detail %}
+    <sw-page class="alpha-marketing-banner-detail">
+        <template #smart-bar-actions>
+            <sw-button-group>
+                <sw-button variant="ghost" @click="onCancel">
+                    {{ $tc('marketing-banner.detail.cancelButtonText') }}
+                </sw-button>
+                <sw-button
+                    :is-loading="isLoading"
+                    v-if="banner"
+                    @click="onSave"
+                    variant="primary">
+                    {{ $tc('marketing-banner.detail.saveButtonText') }}
+                </sw-button>
+            </sw-button-group>
+        </template>
+
+        <template #content>
+            <sw-card-view>
+                <sw-card position-identifier="marketing-banner-detail-name" v-if="banner"
+                         :is-loading="isLoading" :large="false" :hero="false">
+                    <sw-text-field v-model:value="banner.name"
+                                   name="marketingBannerName"
+                                   :label="$tc('marketing-banner.detail.nameLabel')"
+                                   :error="bannerNameError"
+                                   required
+                                   validation="required"></sw-text-field>
+                    <sw-text-field v-model:value="banner.description"
+                                   :label="$tc('marketing-banner.detail.descriptionLabel')"
+                                   name="marketingBannerDescription"></sw-text-field>
+                    <sw-checkbox-field v-model:value="banner.active"
+                                       :label="$tc('marketing-banner.detail.activeLabel')"
+                                       name="marketingBannerActive"></sw-checkbox-field>
+                </sw-card>
+
+                <sw-card position-identifier="marketing-banner-detail-type" v-if="banner" :large="false" :hero="false">
+                    <sw-single-select v-model:value="banner.bannerType"
+                                      :label="$tc('marketing-banner.detail.bannerTypeLabel')"
+                                      :options="bannerTypeSelect"
+                                      :error="bannerTypeError"
+                                      required>
+                    </sw-single-select>
+
+                    <sw-category-tree-field :label="$tc('marketing-banner.detail.categoriesLabel')"
+                                            :categories-collection="categoriesCollection"
+                                            :category-criteria="categoryCriteria"
+                                            @selection-add="onSelectionAdd"
+                                            @selection-remove="onSelectionRemove"/>
+                </sw-card>
+
+                <sw-card position-identifier="marketing-banner-detail-content" v-if="banner">
+                    <sw-text-editor v-model:value="banner.text"
+                                    :label="$tc('marketing-banner.detail.contentText')"
+                    />
+
+                    <sw-media-field v-model:value="banner.mediaId"
+                                    :label="$tc('marketing-banner.detail.contentImage')"></sw-media-field>
+
+                    <sw-colorpicker v-model:value="banner.backgroundColor"
+                                    :label="$tc('marketing-banner.detail.backgroundColor')"
+                                    name="marketingBannerBackgroundColor"
+                                    color-output="hex"></sw-colorpicker>
+
+                    <sw-colorpicker v-model:value="banner.textColor" :label="$tc('marketing-banner.detail.textColor')"
+                                    name="marketingBannerTextColor"
+                                    color-output="hex"></sw-colorpicker>
+
+                    <sw-text-field v-model:value="banner.border"
+                                   :label="$tc('marketing-banner.detail.border')"
+                                   name="marketingBannerBorder"></sw-text-field>
+                    <sw-code-editor
+                        :label="$tc('marketing-banner.detail.css')"
+                        ref="cssEditor"
+                        name="css"
+                        identifier="value"
+                        completionMode="entity"
+                        :editorConfig="editorConfigSass"
+                        v-model:value="banner.css">
+                    </sw-code-editor>
+                </sw-card>
+
+                <sw-card position-identifier="marketing-banner-detail-rules">
+                    <alpha-rule-select
+                        v-if="banner"
+                        :label="$tc('marketing-banner.detail.bannerRules')"
+                        :criteria="ruleFilter"
+                        v-model:collection="banner.rules"
+                        :rule-scope="['global', 'cart', 'checkout', 'lineItem']"
+                        :disabled="isRuleSelectDisabled">
+                    </alpha-rule-select>
+                </sw-card>
+
+                <sw-card position-identifier="marketing-banner-detail-dates">
+                    <sw-datepicker date-type="datetime-local"
+                                   v-if="banner"
+                                   :label="$tc('marketing-banner.detail.labelValidFrom')"
+                                   v-model:value="banner.validFrom">
+                    </sw-datepicker>
+                    <sw-datepicker date-type="datetime-local"
+                                   v-if="banner"
+                                   :label="$tc('marketing-banner.detail.labelValidUntil')"
+                                   v-model:value="banner.validUntil">
+                    </sw-datepicker>
+                </sw-card>
+            </sw-card-view>
+        </template>
+    </sw-page>
+{% endblock %}

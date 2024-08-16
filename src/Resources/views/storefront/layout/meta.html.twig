@@ -1,0 +1,22 @@
+{% sw_extends '@Storefront/storefront/layout/meta.html.twig' %}
+
+{% block layout_head_stylesheet %}
+    {{ parent() }}
+
+    {% set marketingBanners = page.alphaMarketingBanners %}
+
+    {% if marketingBanners %}
+        {% set activeCategoryId = page.header.navigation.active.id %}
+
+        <style>
+            {% for banner in marketingBanners %}
+                {% set bannerCategories = banner.categories %}
+                {% for category in bannerCategories %}
+                    {% if category == activeCategoryId %}
+                        {{ banner.css }}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </style>
+    {% endif %}
+{% endblock %}

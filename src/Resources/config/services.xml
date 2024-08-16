@@ -4,17 +4,29 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="Alpha\Foundation\Core\Content\Product\ProductFeatureBuilder">
+        <service id="AlphaFoundation\Core\Content\Product\ProductFeatureBuilder">
             <argument type="service" id="custom_field.repository"/>
             <argument type="service" id="Shopware\Core\System\Locale\LanguageLocaleCodeProvider"/>
         </service>
 
-        <service id="Alpha\Foundation\Subscriber\ProductSubscriber">
+        <service id="AlphaFoundation\Subscriber\ProductSubscriber">
             <argument type="service" id="sales_channel.product.repository"/>
             <argument type="service" id="product_feature_set.repository"/>
-            <argument type="service" id="Alpha\Foundation\Core\Content\Product\ProductFeatureBuilder"/>
-
+            <argument type="service" id="AlphaFoundation\Core\Content\Product\ProductFeatureBuilder"/>
+            <argument type="service" id="marketing_banner.repository"/>
             <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\MarketingBanner\MarketingBannerDefinition">
+            <tag name="shopware.entity.definition" entity="marketing_banner" />
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\Rule\RuleExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\MarketingBanner\Aggregate\MarketingBannerRule\MarketingBannerRuleDefinition">
+            <tag name="shopware.entity.definition" entity="marketing_banner_rule" />
         </service>
 
     </services>
