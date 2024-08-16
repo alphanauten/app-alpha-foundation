@@ -68,6 +68,11 @@ class MarketingBannerEntity extends Entity
     protected string $border;
 
     /**
+     * @var string
+     */
+    protected string $css = "";
+
+    /**
      * @var RuleCollection|null
      */
     protected ?RuleCollection $rules = null;
@@ -135,7 +140,17 @@ class MarketingBannerEntity extends Entity
 
     public function setText(string $text): void
     {
-        $this->name = $text;
+        $this->text = $text;
+    }
+
+    public function getCss(): string
+    {
+        return $this->css;
+    }
+
+    public function setCss(string $css): void
+    {
+        $this->css = $css;
     }
 
     public function getMediaId(): string

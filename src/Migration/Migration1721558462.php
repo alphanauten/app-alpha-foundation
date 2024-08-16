@@ -35,6 +35,7 @@ class Migration1721558462 extends MigrationStep
                 `background_color` VARCHAR(255) NULL,
                 `text_color` VARCHAR(255) NULL,
                 `border` VARCHAR(255) NULL,
+                `css` LONGTEXT NULL,
                 `media_id` BINARY(16) NULL,
                 `created_at` DATETIME(3) NOT NULL,
                 `updated_at` DATETIME(3) NULL,

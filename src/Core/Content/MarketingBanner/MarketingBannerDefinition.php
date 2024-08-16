@@ -8,10 +8,11 @@ use Shopware\Core\Content\Rule\RuleDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\ApiAware;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Inherited;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ListField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
@@ -49,10 +50,11 @@ class MarketingBannerDefinition extends EntityDefinition
             (new BoolField('active', 'active')),
             (new StringField('banner_type', 'bannerType'))->addFlags(new Required(), new ApiAware()),
             (new ListField('categories', 'categories'))->addFlags(new ApiAware()),
-            (new StringField('text', 'text'))->addFlags(new ApiAware()),
+            (new StringField('text', 'text'))->addFlags(new ApiAware(), new AllowHtml()),
             (new StringField('background_color', 'backgroundColor'))->addFlags(new ApiAware()),
             (new StringField('text_color', 'textColor'))->addFlags(new ApiAware()),
             (new StringField('border', 'border'))->addFlags(new ApiAware()),
+            (new LongTextField('css', 'css'))->addFlags(new AllowHtml(false)),
             (new DateField('valid_from', 'validFrom')),
             (new DateField('valid_until', 'validUntil')),
             (new FkField('media_id', 'mediaId', MediaDefinition::class))->addFlags(new ApiAware()),

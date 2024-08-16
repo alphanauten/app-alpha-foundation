@@ -14,7 +14,6 @@
             <argument type="service" id="product_feature_set.repository"/>
             <argument type="service" id="AlphaFoundation\Core\Content\Product\ProductFeatureBuilder"/>
             <argument type="service" id="marketing_banner.repository"/>
-
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -29,5 +28,6 @@
         <service id="AlphaFoundation\Core\Content\MarketingBanner\Aggregate\MarketingBannerRule\MarketingBannerRuleDefinition">
             <tag name="shopware.entity.definition" entity="marketing_banner_rule" />
         </service>
+
     </services>
 </container>

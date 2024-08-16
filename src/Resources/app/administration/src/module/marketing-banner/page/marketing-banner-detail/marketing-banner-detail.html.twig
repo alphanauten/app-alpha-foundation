@@ -68,7 +68,15 @@
                     <sw-text-field v-model:value="banner.border"
                                    :label="$tc('marketing-banner.detail.border')"
                                    name="marketingBannerBorder"></sw-text-field>
-
+                    <sw-code-editor
+                        :label="$tc('marketing-banner.detail.css')"
+                        ref="cssEditor"
+                        name="css"
+                        identifier="value"
+                        completionMode="entity"
+                        :editorConfig="editorConfigSass"
+                        v-model:value="banner.css">
+                    </sw-code-editor>
                 </sw-card>
 
                 <sw-card position-identifier="marketing-banner-detail-rules">

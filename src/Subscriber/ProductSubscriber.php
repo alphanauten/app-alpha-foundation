@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlphaFoundation\Subscriber;
 
+use AlphaFoundation\Core\Content\MarketingBanner\MarketingBannerEntity;
 use AlphaFoundation\Core\Content\Product\ProductFeatureBuilder;
 use Shopware\Core\Content\Product\Events\ProductIndexerEvent;
 use Shopware\Core\Content\Product\Events\ProductListingCriteriaEvent;
@@ -39,7 +40,7 @@ class ProductSubscriber implements EventSubscriberInterface
             ProductEvents::PRODUCT_LISTING_CRITERIA => 'extendListingCriteria',
             'sales_channel.'.ProductEvents::PRODUCT_LOADED_EVENT => 'onProductsLoaded',
             ProductIndexerEvent::class => 'onProductIndexerEvent',
-            ProductPageLoadedEvent::class => 'onProductPageLoaded'
+            ProductPageLoadedEvent::class => 'onProductPageLoaded',
         ];
     }
 
@@ -92,13 +93,31 @@ class ProductSubscriber implements EventSubscriberInterface
     public function onProductPageLoaded(ProductPageLoadedEvent $event)
     {
         $page = $event->getPage();
+        $salesChannelRulesIds = $event->getSalesChannelContext()->getRuleIds() ?? [];
         $marketingBanners = $this->marketingBannerRepository->search($this->buildProductMarketingBannerCriteria(), $event->getContext())->getEntities();
+        /** @var MarketingBannerEntity $marketingBanner */
+        foreach ($marketingBanners as $marketingBanner)
+        {
+            $marketingRules = $marketingBanner->getRules()->getIds() ?? [];
+
+            if (empty($marketingRules))
+            {
+                continue;
+            }
+            $isMarketingRulesIncluded = array_diff(array_keys($marketingRules),array_values($salesChannelRulesIds));
+            if (!empty($isMarketingRulesIncluded))
+            {
+                $marketingBanners->remove($marketingBanner->getId());
+            }
+        }
+
         $page->assign(['alphaMarketingBanners'=>$marketingBanners]);
     }
 
     protected function buildProductMarketingBannerCriteria(): Criteria
     {
         $criteria = new Criteria();
+        $criteria->addAssociation('rules');
         $criteria->addFilter(new EqualsFilter('bannerType', self::PRODUCT_BANNER_TYPE));
         return $criteria;
     }
