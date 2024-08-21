@@ -10,11 +10,13 @@ Component.register('marketing-banner-detail', {
     template,
 
     inject: [
-        'repositoryFactory'
+        'repositoryFactory',
+        'cmsDataResolverService'
     ],
 
     mixins: [
-        Mixin.getByName('notification')
+        Mixin.getByName('notification'),
+        Mixin.getByName('cms-element'),
     ],
 
     metaInfo() {
@@ -26,7 +28,7 @@ Component.register('marketing-banner-detail', {
     data() {
         return {
             repository: null,
-            banner: null,
+            element: null,
             isLoading: false,
             isSaveSuccessful: false,
             categoriesCollection: null
@@ -48,7 +50,6 @@ Component.register('marketing-banner-detail', {
                 value: 'product'
             }];
         },
-
 
         bannerRepository() {
             return this.repositoryFactory.create('marketing_banner');
@@ -88,16 +89,27 @@ Component.register('marketing-banner-detail', {
             await this.getBanner();
             await this.loadCategories();
 
+            if (this.element.type) {
+                this.cmsDataResolverService.resolve({sections: [{blocks: [{slots: [this.element]}]}]}).then(() => {
+                    this.initElementConfig(this.element.type);
+                    this.initElementData(this.element.type);
+                }).catch((exception) => {
+                    this.createNotificationError({
+                        title: exception.message,
+                        message: exception.response,
+                    });
+                });
+            }
             this.isLoading = false;
         },
 
         async getBanner() {
-            this.banner = await this.repository.get(this.$route.params.id, Context.api);
+            this.element = await this.repository.get(this.$route.params.id, Context.api);
         },
 
         async loadCategories() {
             const criteria = new Criteria(1, 100);
-            const categories = this.banner.categories ? this.banner.categories : [];
+            const categories = this.element.categories ? this.element.categories : [];
 
             if (categories.length < 1) {
                 return;
@@ -113,22 +125,22 @@ Component.register('marketing-banner-detail', {
         },
 
         onSelectionAdd(category) {
-            if (!this.banner.categories) {
-                this.$set(this.banner, 'categories', []);
+            if (!this.element.categories) {
+                this.$set(this.element, 'categories', []);
             }
 
-            this.banner.categories.push(category.id);
+            this.element.categories.push(category.id);
         },
 
         onSelectionRemove(category) {
-            if (!this.banner.categories) {
-                this.$set(this.banner, 'categories', []);
+            if (!this.element.categories) {
+                this.$set(this.element, 'categories', []);
             }
 
-            const index = this.banner.categories.indexOf(category.id);
+            const index = this.element.categories.indexOf(category.id);
 
             if (index !== -1) {
-                this.banner.categories.splice(index, 1);
+                this.element.categories.splice(index, 1);
             }
         },
 
@@ -141,7 +153,7 @@ Component.register('marketing-banner-detail', {
             this.isLoading = true;
 
             this.repository
-                .save(this.banner, Context.api)
+                .save(this.element, Context.api)
                 .then(() => {
                     this.getBanner();
                     this.isSaveSuccessful = true;
@@ -153,6 +165,9 @@ Component.register('marketing-banner-detail', {
                     });
                 })
                 .finally(() => this.isLoading = false);
-        }
+        },
+        onChangeLanguage() {
+            this.getItem();
+        },
     }
 });

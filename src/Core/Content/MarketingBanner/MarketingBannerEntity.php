@@ -2,15 +2,13 @@
 
 namespace AlphaFoundation\Core\Content\MarketingBanner;
 
-use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Media\MediaEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\Entity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\Content\Rule\RuleCollection;
+use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotEntity;
 
-class MarketingBannerEntity extends Entity
+class MarketingBannerEntity extends CmsSlotEntity
 {
-    use EntityIdTrait;
+    protected $slot = 'content';
 
     /**
      * @var string
@@ -86,12 +84,6 @@ class MarketingBannerEntity extends Entity
      * @var \DateTimeInterface|null
      */
     protected $validUntil;
-
-    /**
-     * MarketingBannerEntity constructor.
-     */
-    public function __construct() {
-    }
 
     public function getName(): string
     {

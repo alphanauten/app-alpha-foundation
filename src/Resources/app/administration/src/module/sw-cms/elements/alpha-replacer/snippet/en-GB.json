@@ -1,0 +1,14 @@
+{
+    "sw-cms": {
+        "elements": {
+            "alpha-replacer": {
+                "title": "Replace Me",
+                "description": "Replace this Element or load one from Alpha CMS Element Config Saver",
+                "label": {
+                    "load": "Load",
+                    "selectConfig": "Select a Configuration"
+                }
+            }
+        }
+    }
+}

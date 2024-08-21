@@ -1,11 +1,14 @@
-const { Component, Module } = Shopware;
+const {  Module } = Shopware;
 
 import './page/marketing-banner-list';
 import './page/marketing-banner-detail';
 import './page/marketing-banner-create';
-// Component.register('alphanauten-marketing-banner-list', () => import('./page/marketing-banner-list'));
-// Component.register('alphanauten-marketing-banner-detail', () => import('./page/marketing-banner-detail'));
-// Component.extend(() => import('./page/marketing-banner-create'), 'alphanauten-marketing-banner-detail');
+
+import './component/alpha-rule-select';
+import './views/sw-settings-rule-detail-assignments';
+
+import deDE from './snippet/de-DE.json';
+import enGB from './snippet/en-GB.json';
 
 Module.register('marketing-banner', {
     type: 'plugin',
