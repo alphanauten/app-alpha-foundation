@@ -14,6 +14,8 @@
             <argument type="service" id="product_feature_set.repository"/>
             <argument type="service" id="AlphaFoundation\Core\Content\Product\ProductFeatureBuilder"/>
             <argument type="service" id="marketing_banner.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
+            <argument type="service" id="Shopware\Core\Content\Cms\DataResolver\CmsSlotsDataResolver"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -27,6 +29,14 @@
 
         <service id="AlphaFoundation\Core\Content\MarketingBanner\Aggregate\MarketingBannerRule\MarketingBannerRuleDefinition">
             <tag name="shopware.entity.definition" entity="marketing_banner_rule" />
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\MarketingBanner\Aggregate\MarketingBannerTranslation\MarketingBannerTranslationDefinition">
+            <tag name="shopware.entity.definition" entity="marketing_banner_translation"/>
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\CmsElementConfig\CmsElementConfigDefinition">
+            <tag name="shopware.entity.definition" entity="alpha_cms_element_config"/>
         </service>
 
     </services>

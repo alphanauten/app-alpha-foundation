@@ -7,7 +7,7 @@
                 </sw-button>
                 <sw-button
                     :is-loading="isLoading"
-                    v-if="banner"
+                    v-if="element"
                     @click="onSave"
                     variant="primary">
                     {{ $tc('marketing-banner.detail.saveButtonText') }}
@@ -17,24 +17,24 @@
 
         <template #content>
             <sw-card-view>
-                <sw-card position-identifier="marketing-banner-detail-name" v-if="banner"
+                <sw-card position-identifier="marketing-banner-detail-name" v-if="element"
                          :is-loading="isLoading" :large="false" :hero="false">
-                    <sw-text-field v-model:value="banner.name"
+                    <sw-text-field v-model:value="element.name"
                                    name="marketingBannerName"
                                    :label="$tc('marketing-banner.detail.nameLabel')"
                                    :error="bannerNameError"
                                    required
                                    validation="required"></sw-text-field>
-                    <sw-text-field v-model:value="banner.description"
+                    <sw-text-field v-model:value="element.description"
                                    :label="$tc('marketing-banner.detail.descriptionLabel')"
                                    name="marketingBannerDescription"></sw-text-field>
-                    <sw-checkbox-field v-model:value="banner.active"
+                    <sw-checkbox-field v-model:value="element.active"
                                        :label="$tc('marketing-banner.detail.activeLabel')"
                                        name="marketingBannerActive"></sw-checkbox-field>
                 </sw-card>
 
-                <sw-card position-identifier="marketing-banner-detail-type" v-if="banner" :large="false" :hero="false">
-                    <sw-single-select v-model:value="banner.bannerType"
+                <sw-card position-identifier="marketing-banner-detail-type" v-if="element" :large="false" :hero="false">
+                    <sw-single-select v-model:value="element.bannerType"
                                       :label="$tc('marketing-banner.detail.bannerTypeLabel')"
                                       :options="bannerTypeSelect"
                                       :error="bannerTypeError"
@@ -48,24 +48,24 @@
                                             @selection-remove="onSelectionRemove"/>
                 </sw-card>
 
-                <sw-card position-identifier="marketing-banner-detail-content" v-if="banner">
-                    <sw-text-editor v-model:value="banner.text"
+                <sw-card position-identifier="marketing-banner-detail-content" v-if="element">
+                    <sw-text-editor v-model:value="element.text"
                                     :label="$tc('marketing-banner.detail.contentText')"
                     />
 
-                    <sw-media-field v-model:value="banner.mediaId"
+                    <sw-media-field v-model:value="element.mediaId"
                                     :label="$tc('marketing-banner.detail.contentImage')"></sw-media-field>
 
-                    <sw-colorpicker v-model:value="banner.backgroundColor"
+                    <sw-colorpicker v-model:value="element.backgroundColor"
                                     :label="$tc('marketing-banner.detail.backgroundColor')"
                                     name="marketingBannerBackgroundColor"
                                     color-output="hex"></sw-colorpicker>
 
-                    <sw-colorpicker v-model:value="banner.textColor" :label="$tc('marketing-banner.detail.textColor')"
+                    <sw-colorpicker v-model:value="element.textColor" :label="$tc('marketing-banner.detail.textColor')"
                                     name="marketingBannerTextColor"
                                     color-output="hex"></sw-colorpicker>
 
-                    <sw-text-field v-model:value="banner.border"
+                    <sw-text-field v-model:value="element.border"
                                    :label="$tc('marketing-banner.detail.border')"
                                    name="marketingBannerBorder"></sw-text-field>
                     <sw-code-editor
@@ -75,16 +75,25 @@
                         identifier="value"
                         completionMode="entity"
                         :editorConfig="editorConfigSass"
-                        v-model:value="banner.css">
+                        v-model:value="element.css">
                     </sw-code-editor>
+                </sw-card>
+
+                <sw-card v-if="element && !element._isNew" position-identifier="marketing-banner-detail-slot" :is-loading="isLoading">
+                    <sw-cms-slot
+                        :key="element.id"
+                        :element="element"
+                        :disabled="false"
+                        :active="!isLoading"
+                    />
                 </sw-card>
 
                 <sw-card position-identifier="marketing-banner-detail-rules">
                     <alpha-rule-select
-                        v-if="banner"
+                        v-if="element"
                         :label="$tc('marketing-banner.detail.bannerRules')"
                         :criteria="ruleFilter"
-                        v-model:collection="banner.rules"
+                        v-model:collection="element.rules"
                         :rule-scope="['global', 'cart', 'checkout', 'lineItem']"
                         :disabled="isRuleSelectDisabled">
                     </alpha-rule-select>
@@ -92,14 +101,14 @@
 
                 <sw-card position-identifier="marketing-banner-detail-dates">
                     <sw-datepicker date-type="datetime-local"
-                                   v-if="banner"
+                                   v-if="element"
                                    :label="$tc('marketing-banner.detail.labelValidFrom')"
-                                   v-model:value="banner.validFrom">
+                                   v-model:value="element.validFrom">
                     </sw-datepicker>
                     <sw-datepicker date-type="datetime-local"
-                                   v-if="banner"
+                                   v-if="element"
                                    :label="$tc('marketing-banner.detail.labelValidUntil')"
-                                   v-model:value="banner.validUntil">
+                                   v-model:value="element.validUntil">
                     </sw-datepicker>
                 </sw-card>
             </sw-card-view>

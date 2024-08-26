@@ -1,0 +1,14 @@
+{
+    "sw-cms": {
+        "elements": {
+            "alpha-replacer": {
+                "title": "Tausch mich aus",
+                "description": "Tausche dieses Element aus oder wähle eine Konfiguration",
+                "label": {
+                    "load": "Laden",
+                    "selectConfig": "Wähle eine Konfiguration"
+                }
+            }
+        }
+    }
+}
