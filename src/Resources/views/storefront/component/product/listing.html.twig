@@ -1,0 +1,25 @@
+{% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
+
+{% block element_product_listing_col %}
+    {% set activeCategory = page.header.navigation.active %}
+    {% if activeCategory.alphaMarketingBanners %}
+        {% set banners = activeCategory.alphaMarketingBanners %}
+
+        {% for banner in banners %}
+            {% if activeCategory.id in banner.categories %}
+                {% set bannerBackgroundColor = banner.backgroundColor %}
+                {% set bannerTextColor = banner.textColor %}
+                {% set bannerBorder = banner.border %}
+                <div class="product-detail-marketing-banner"
+                     style="{% if bannerBackgroundColor %}background-color: {{ bannerBackgroundColor }};{% endif %}
+                             {% if bannerBorder %}border: {{ bannerBorder }};{% endif %}
+                         {% if bannerTextColor %}color: {{ bannerTextColor }};{% endif %}">
+                    {% set element = banner %}
+                    {% sw_include "@Storefront/storefront/element/cms-element-" ~ element.type ~ ".html.twig" ignore missing %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

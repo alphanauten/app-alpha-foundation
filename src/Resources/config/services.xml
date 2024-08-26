@@ -14,6 +14,8 @@
             <argument type="service" id="product_feature_set.repository"/>
             <argument type="service" id="AlphaFoundation\Core\Content\Product\ProductFeatureBuilder"/>
             <argument type="service" id="marketing_banner.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
+            <argument type="service" id="Shopware\Core\Content\Cms\DataResolver\CmsSlotsDataResolver"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
