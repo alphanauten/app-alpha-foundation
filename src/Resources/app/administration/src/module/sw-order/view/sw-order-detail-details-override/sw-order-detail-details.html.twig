@@ -7,6 +7,7 @@
         :label="$tc('sw-order.createBase.detailsFooter.labelPaymentMethod')"
         :placeholder="$tc('sw-order.createBase.detailsFooter.placeholderPaymentMethod')"
         show-clearable-button
+        :disabled="disableChangePayment"
     />
 {% endblock %}
 
@@ -18,5 +19,6 @@
         :label="$tc('sw-order.createBase.detailsFooter.labelShippingMethod')"
         :placeholder="$tc('sw-order.createBase.detailsFooter.placeholderShippingMethod')"
         show-clearable-button
+        :disabled="disableChangeShipping"
     />
 {% endblock %}
