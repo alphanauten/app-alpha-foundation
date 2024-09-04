@@ -1,0 +1,22 @@
+{% block sw_order_detail_details_payment_method_select %}
+    <sw-entity-single-select
+        v-model:value="transaction.paymentMethodId"
+        entity="payment_method"
+        label-property="distinguishableName"
+        :criteria="paymentMethodCriteria"
+        :label="$tc('sw-order.createBase.detailsFooter.labelPaymentMethod')"
+        :placeholder="$tc('sw-order.createBase.detailsFooter.placeholderPaymentMethod')"
+        show-clearable-button
+    />
+{% endblock %}
+
+{% block sw_order_detail_details_shipping_method_select %}
+    <sw-entity-single-select
+        v-model:value="delivery.shippingMethodId"
+        entity="shipping_method"
+        :criteria="salesChannelCriteria"
+        :label="$tc('sw-order.createBase.detailsFooter.labelShippingMethod')"
+        :placeholder="$tc('sw-order.createBase.detailsFooter.placeholderShippingMethod')"
+        show-clearable-button
+    />
+{% endblock %}
