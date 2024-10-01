@@ -27,8 +27,8 @@ class Migration1721558462 extends MigrationStep
             CREATE TABLE IF NOT EXISTS `marketing_banner` (
                 `id` BINARY(16) NOT NULL,
                 `name` VARCHAR(255) NOT NULL,
-                `description` VARCHAR(255) NOT NULL,
-                `active`          TINYINT(1)                              NOT NULL DEFAULT 0,
+                `description` VARCHAR(255) NULL,
+                `active` TINYINT(1)  NOT NULL DEFAULT 0,
                 `banner_type` VARCHAR(255) NOT NULL,
                 `categories` JSON NOT NULL,
                 `text` LONGTEXT NULL,
@@ -43,7 +43,7 @@ class Migration1721558462 extends MigrationStep
                 `custom_fields` JSON NULL,
                 `created_at` DATETIME(3) NOT NULL,
                 `updated_at` DATETIME(3) NULL,
-                `valid_from` DATETIME(3) NOT NULL,
+                `valid_from` DATETIME(3) NULL,
                 `valid_until` DATETIME(3) NULL,
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -95,5 +95,14 @@ class Migration1721558462 extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             SQL;
         $connection->executeStatement($sql);
+
     }
+
+    /**
+     * update destructive changes
+     */
+    public function updateDestructive(Connection $connection): void
+    {
+    }
+
 }

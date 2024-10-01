@@ -156,6 +156,10 @@ Component.register('marketing-banner-detail', {
                 .save(this.element, Context.api)
                 .then(() => {
                     this.getBanner();
+                    this.createNotificationSuccess({
+                        title: this.$tc('global.default.success'),
+                        message: ''
+                    });
                     this.isSaveSuccessful = true;
                 })
                 .catch((exception) => {

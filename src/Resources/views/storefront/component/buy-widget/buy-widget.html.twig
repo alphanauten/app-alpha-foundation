@@ -5,27 +5,16 @@
         {% set activeCategoryId = page.header.navigation.active.id %}
 
         {% for banner in page.alphaMarketingBanners %}
-            {% if activeCategoryId in banner.categories %}
-                {% set bannerBackgroundColor = banner.backgroundColor %}
-                {% set bannerTextColor = banner.textColor %}
-                {% set bannerBorder = banner.border %}
-                <div class="product-detail-marketing-banner"
-                     style="{% if bannerBackgroundColor %}background-color: {{ bannerBackgroundColor }};{% endif %}
-                             {% if bannerBorder %}border: {{ bannerBorder }};{% endif %}
-                         {% if bannerTextColor %}color: {{ bannerTextColor }};{% endif %}">
-                    {#                        {% if banner.media %} #}
-                    {#                            <div class="product-detail-marketing-banner__image"> #}
-                    {#                                <img src="{{ banner.media.url }}" alt=""> #}
-                    {#                            </div> #}
-                    {#                        {% endif %} #}
-                    {#                        <div class="product-detail-marketing-banner__text"> #}
-                    {#                            {{ banner.text|raw }} #}
-                    {#                        </div> #}
-
-                    {% set element = banner %}
-                    {% sw_include "@Storefront/storefront/element/cms-element-" ~ element.type ~ ".html.twig" ignore missing %}
-                </div>
-            {% endif %}
+            {% set bannerBackgroundColor = banner.backgroundColor %}
+            {% set bannerTextColor = banner.textColor %}
+            {% set bannerBorder = banner.border %}
+            <div class="product-detail-marketing-banner"
+                 style="{% if bannerBackgroundColor %}background-color: {{ bannerBackgroundColor }};{% endif %}
+                         {% if bannerBorder %}border: {{ bannerBorder }};{% endif %}
+                     {% if bannerTextColor %}color: {{ bannerTextColor }};{% endif %}">
+                {% set element = banner %}
+                {% sw_include "@Storefront/storefront/element/cms-element-" ~ element.type ~ ".html.twig" ignore missing %}
+            </div>
         {% endfor %}
     {% endif %}
 

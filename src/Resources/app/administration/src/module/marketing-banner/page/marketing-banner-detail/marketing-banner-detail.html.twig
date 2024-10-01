@@ -48,37 +48,6 @@
                                             @selection-remove="onSelectionRemove"/>
                 </sw-card>
 
-                <sw-card position-identifier="marketing-banner-detail-content" v-if="element">
-                    <sw-text-editor v-model:value="element.text"
-                                    :label="$tc('marketing-banner.detail.contentText')"
-                    />
-
-                    <sw-media-field v-model:value="element.mediaId"
-                                    :label="$tc('marketing-banner.detail.contentImage')"></sw-media-field>
-
-                    <sw-colorpicker v-model:value="element.backgroundColor"
-                                    :label="$tc('marketing-banner.detail.backgroundColor')"
-                                    name="marketingBannerBackgroundColor"
-                                    color-output="hex"></sw-colorpicker>
-
-                    <sw-colorpicker v-model:value="element.textColor" :label="$tc('marketing-banner.detail.textColor')"
-                                    name="marketingBannerTextColor"
-                                    color-output="hex"></sw-colorpicker>
-
-                    <sw-text-field v-model:value="element.border"
-                                   :label="$tc('marketing-banner.detail.border')"
-                                   name="marketingBannerBorder"></sw-text-field>
-                    <sw-code-editor
-                        :label="$tc('marketing-banner.detail.css')"
-                        ref="cssEditor"
-                        name="css"
-                        identifier="value"
-                        completionMode="entity"
-                        :editorConfig="editorConfigSass"
-                        v-model:value="element.css">
-                    </sw-code-editor>
-                </sw-card>
-
                 <sw-card v-if="element && !element._isNew" position-identifier="marketing-banner-detail-slot" :is-loading="isLoading">
                     <sw-cms-slot
                         :key="element.id"
@@ -86,6 +55,15 @@
                         :disabled="false"
                         :active="!isLoading"
                     />
+                    <sw-code-editor
+                            :label="$tc('marketing-banner.detail.css')"
+                            ref="cssEditor"
+                            name="css"
+                            identifier="value"
+                            completionMode="entity"
+                            :editorConfig="editorConfigSass"
+                            v-model:value="element.css">
+                    </sw-code-editor>
                 </sw-card>
 
                 <sw-card position-identifier="marketing-banner-detail-rules">
