@@ -46,6 +46,24 @@
                                             :category-criteria="categoryCriteria"
                                             @selection-add="onSelectionAdd"
                                             @selection-remove="onSelectionRemove"/>
+
+                    <sw-single-select v-model:value="element.bannerCondition"
+                                      :label="$tc('marketing-banner.detail.bannerConditionLabel')"
+                                      :options="bannerConditionSelect"
+                                      :error="bannerConditionError"
+                                      required>
+                    </sw-single-select>
+
+                    <sw-entity-multi-select
+                        v-if="element.bannerCondition == 'only_with' || element.bannerCondition == 'exclude'"
+                        v-model:entity-collection="propertyGroupOptionCollection"
+                        entity-name="property_group_option"
+                        :criteria="propertyGroupOptionCriteria"
+                        :label="$tc('marketing-banner.detail.bannerPropertiesLabel')"
+                        @item-add="onPropertyGroupOptionAdd"
+                        @item-remove="onPropertyGroupOptionRemove"
+                        :error="propertyGroupOptionsError"
+                    />
                 </sw-card>
 
                 <sw-card v-if="element && !element._isNew" position-identifier="marketing-banner-detail-slot" :is-loading="isLoading">

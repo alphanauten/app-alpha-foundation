@@ -31,9 +31,20 @@ class MarketingBannerEntity extends CmsSlotEntity
     protected string $bannerType;
 
     /**
+     * @var string
+     */
+
+    protected string $bannerCondition;
+
+    /**
      * @var array<string>
      */
     protected array $categories = [];
+
+    /**
+     * @var array<string>
+     */
+    protected array $propertyGroupOptions = [];
 
     /**
      * @var string
@@ -202,5 +213,25 @@ class MarketingBannerEntity extends CmsSlotEntity
     public function setCategories(array|string $categories): void
     {
         $this->categories = $categories;
+    }
+
+    public function getBannerCondition(): string
+    {
+        return $this->bannerCondition;
+    }
+
+    public function setBannerCondition(string $bannerCondition): void
+    {
+        $this->bannerCondition = $bannerCondition;
+    }
+
+    public function getPropertyGroupOptions(): string|array
+    {
+        return $this->propertyGroupOptions;
+    }
+
+    public function setPropertyGroupOptions(string|array $propertyGroupOptions): void
+    {
+        $this->propertyGroupOptions = $propertyGroupOptions;
     }
 }

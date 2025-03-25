@@ -31,7 +31,12 @@
       "contentImage": "Image",
       "backgroundColor": "Background color",
       "textColor": "Text color",
-      "border": "Border"
+      "border": "Border",
+      "bannerConditionLabel": "Condition",
+      "bannerConditionNo": "No restriction",
+      "bannerConditionWith": "Only with selected properties",
+      "bannerConditionExclude": "Exclude selected properties",
+      "bannerPropertiesLabel": "Properties"
     }
   }
 }

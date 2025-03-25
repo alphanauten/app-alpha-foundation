@@ -10,8 +10,11 @@ use Shopware\Core\Content\Category\Event\NavigationLoadedEvent;
 use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotCollection;
 use Shopware\Core\Content\Cms\DataResolver\CmsSlotsDataResolver;
 use Shopware\Core\Content\Cms\DataResolver\ResolverContext\ResolverContext;
+use Shopware\Core\Content\Cms\Events\CmsPageLoadedEvent;
 use Shopware\Core\Content\Product\Events\ProductListingCriteriaEvent;
+use Shopware\Core\Content\Product\Events\ProductListingResultEvent;
 use Shopware\Core\Content\Product\ProductEvents;
+use Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingResult;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -49,6 +52,7 @@ class ProductSubscriber implements EventSubscriberInterface
             'sales_channel.'.ProductEvents::PRODUCT_LOADED_EVENT => 'onProductsLoaded',
             ProductPageLoadedEvent::class => 'onProductPageLoaded',
             NavigationLoadedEvent::class => 'onNavigationLoaded',
+            ProductListingResultEvent::class => 'onCmsPageLoaded',
         ];
     }
 
@@ -200,5 +204,36 @@ class ProductSubscriber implements EventSubscriberInterface
         $criteria->addFilter(new EqualsFilter('bannerType', $bannerType));
 
         return $criteria;
+    }
+
+    public function onCmsPageLoaded(ProductListingResultEvent $event): void
+    {
+        $salesChannelRulesIds = $event->getSalesChannelContext()->getRuleIds() ?? [];
+        $marketingBanners = $this->marketingBannerRepository->search($this->buildProductMarketingBannerCriteria(self::CATEGORY_BANNER_TYPE), $event->getContext())->getEntities();
+        /** @var MarketingBannerEntity $marketingBanner */
+        foreach ($marketingBanners as $marketingBanner) {
+            $marketingRules = $marketingBanner->getRules()->getIds() ?? [];
+
+            if (empty($marketingRules)) {
+                continue;
+            }
+            $isMarketingRulesIncluded = array_diff(array_keys($marketingRules), array_values($salesChannelRulesIds));
+            if (!empty($isMarketingRulesIncluded)) {
+                $marketingBanners->remove($marketingBanner->getId());
+            }
+        }
+        $salesChannelContext = $event->getSalesChannelContext();
+
+        if (0 === $marketingBanners->count()) {
+            return;
+        }
+
+        $cmsSlotCollection = CmsSlotCollection::createFrom($marketingBanners);
+
+        $resolverContext = new ResolverContext($salesChannelContext, new Request());
+
+        $this->resolver->resolve($cmsSlotCollection, $resolverContext);
+
+        $event->getResult()->addExtension('alphaMarketingBanners', $cmsSlotCollection);
     }
 }

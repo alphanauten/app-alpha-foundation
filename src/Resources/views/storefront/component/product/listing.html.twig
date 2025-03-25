@@ -1,22 +1,63 @@
 {% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
 
 {% block element_product_listing_col %}
-    {% set activeCategory = page.header.navigation.active %}
-    {% if activeCategory.alphaMarketingBanners %}
+    {% if page %}
+        {% set activeCategory = page.header.navigation.active %}
         {% set banners = activeCategory.alphaMarketingBanners %}
+        {% set activeCategoryId = activeCategory.id %}
+    {% else %}
+        {% set activeCategory = app.request.attributes.get('navigationId') %}
+        {% set banners = searchResult.extensions.alphaMarketingBanners %}
+        {% set activeCategoryId = app.request.attributes.get('navigationId') %}
+    {% endif %}
 
+    {% if banners %}
         {% for banner in banners %}
-            {% if activeCategory.id in banner.categories %}
+            {% if activeCategoryId in banner.categories %}
                 {% set bannerBackgroundColor = banner.backgroundColor %}
                 {% set bannerTextColor = banner.textColor %}
                 {% set bannerBorder = banner.border %}
-                <div class="product-detail-marketing-banner"
-                     style="{% if bannerBackgroundColor %}background-color: {{ bannerBackgroundColor }};{% endif %}
+
+                {% set bannerCondition = banner.bannerCondition %}
+                {% set bannerPropertyGroupOptions = banner.propertyGroupOptions %}
+                {% set queryPropertyGroupOptions = app.request.query.get('properties') %}
+
+                {% if (bannerCondition == 'only_with' or bannerCondition == 'exclude') and bannerPropertyGroupOptions %}
+                    {% set isVisibleBanner = false %}
+                    {% set break = false %}
+
+                    {% if bannerPropertyGroupOptions %}
+                        {% if bannerCondition == 'only_with' %}
+                            {% for property in bannerPropertyGroupOptions %}
+                                {% if property in queryPropertyGroupOptions and not break %}
+                                    {% set isVisibleBanner = true %}
+                                    {% set break = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% elseif bannerCondition == 'exclude' %}
+                            {% for property in bannerPropertyGroupOptions %}
+                                {% if property in queryPropertyGroupOptions and not break %}
+                                    {% set isVisibleBanner = false %}
+                                    {% set break = true %}
+                                {% elseif property not in queryPropertyGroupOptions and not break %}
+                                    {% set isVisibleBanner = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    {% set isVisibleBanner = true %}
+                {% endif %}
+
+                {% if isVisibleBanner %}
+                    <div class="product-detail-marketing-banner"
+                         style="{% if bannerBackgroundColor %}background-color: {{ bannerBackgroundColor }};{% endif %}
                              {% if bannerBorder %}border: {{ bannerBorder }};{% endif %}
-                         {% if bannerTextColor %}color: {{ bannerTextColor }};{% endif %}">
-                    {% set element = banner %}
-                    {% sw_include "@Storefront/storefront/element/cms-element-" ~ element.type ~ ".html.twig" ignore missing %}
-                </div>
+                             {% if bannerTextColor %}color: {{ bannerTextColor }};{% endif %}">
+                        {% set element = banner %}
+                        {% sw_include "@Storefront/storefront/element/cms-element-" ~ element.type ~ ".html.twig" ignore missing %}
+                    </div>
+                {% endif %}
             {% endif %}
         {% endfor %}
     {% endif %}

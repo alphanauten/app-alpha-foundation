@@ -31,14 +31,17 @@ Component.register('marketing-banner-detail', {
             element: null,
             isLoading: false,
             isSaveSuccessful: false,
-            categoriesCollection: null
+            categoriesCollection: null,
+            propertyGroupOptionCollection: null
         };
     },
 
     computed: {
         ...mapPropertyErrors('banner', [
             'name',
-            'bannerType'
+            'bannerType',
+            'bannerCondition',
+            'propertyGroupOptions'
         ]),
 
         bannerTypeSelect() {
@@ -51,12 +54,29 @@ Component.register('marketing-banner-detail', {
             }];
         },
 
+        bannerConditionSelect() {
+            return [{
+                label: this.$tc("marketing-banner.detail.bannerConditionNo"),
+                value: 'no_restriction'
+            }, {
+                label: this.$tc("marketing-banner.detail.bannerConditionWith"),
+                value: 'only_with'
+            }, {
+                label: this.$tc("marketing-banner.detail.bannerConditionExclude"),
+                value: 'exclude'
+            }];
+        },
+
         bannerRepository() {
             return this.repositoryFactory.create('marketing_banner');
         },
 
         categoryRepository() {
             return this.repositoryFactory.create('category');
+        },
+
+        propertyGroupOptionRepository() {
+            return this.repositoryFactory.create('property_group_option');
         },
 
         categoryCriteria() {
@@ -72,6 +92,12 @@ Component.register('marketing-banner-detail', {
 
         isRuleSelectDisabled() {
             return false;
+        },
+
+        propertyGroupOptionCriteria() {
+            const criteria = new Criteria();
+            criteria.addSorting(Criteria.sort('name', 'ASC'));
+            return criteria;
         }
     },
 
@@ -85,12 +111,14 @@ Component.register('marketing-banner-detail', {
 
             this.repository = this.repositoryFactory.create('marketing_banner');
             this.categoriesCollection = new EntityCollection('/category', 'category', Shopware.Context.api);
+            this.propertyGroupOptionCollection = new EntityCollection('/property-group-option', 'property_group_option', Shopware.Context.api);
 
             await this.getBanner();
             await this.loadCategories();
+            await this.loadPropertyGroupOptions();
 
             if (this.element.type) {
-                this.cmsDataResolverService.resolve({sections: [{blocks: [{slots: [this.element]}]}]}).then(() => {
+                this.cmsDataResolverService.resolve({ sections: [{ blocks: [{ slots: [this.element] }] }] }).then(() => {
                     this.initElementConfig(this.element.type);
                     this.initElementData(this.element.type);
                 }).catch((exception) => {
@@ -124,6 +152,23 @@ Component.register('marketing-banner-detail', {
                 });
         },
 
+        async loadPropertyGroupOptions() {
+            const criteria = new Criteria(1, 100);
+            const propertyGroupOptions = this.element.propertyGroupOptions ? this.element.propertyGroupOptions : [];
+
+            if (propertyGroupOptions.length < 1) {
+                return;
+            }
+
+            criteria.setIds(propertyGroupOptions);
+
+            return await this.propertyGroupOptionRepository
+                .search(criteria, Shopware.Context.api)
+                .then((response) => {
+                    this.propertyGroupOptionCollection = response;
+                });
+        },
+
         onSelectionAdd(category) {
             if (!this.element.categories) {
                 this.$set(this.element, 'categories', []);
@@ -141,6 +186,26 @@ Component.register('marketing-banner-detail', {
 
             if (index !== -1) {
                 this.element.categories.splice(index, 1);
+            }
+        },
+
+        onPropertyGroupOptionAdd(propertyGroupOption) {
+            if (!this.element.propertyGroupOptions) {
+                this.$set(this.element, 'propertyGroupOptions', []);
+            }
+
+            this.element.propertyGroupOptions.push(propertyGroupOption.id);
+        },
+
+        onPropertyGroupOptionRemove(propertyGroupOption) {
+            if (!this.element.propertyGroupOptions) {
+                this.$set(this.element, 'propertyGroupOptions', []);
+            }
+
+            const index = this.element.propertyGroupOptions.indexOf(propertyGroupOption.id);
+
+            if (index !== -1) {
+                this.element.propertyGroupOptions.splice(index, 1);
             }
         },
 
