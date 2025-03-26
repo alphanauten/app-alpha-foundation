@@ -73,6 +73,15 @@
                         :disabled="false"
                         :active="!isLoading"
                     />
+                    <sw-colorpicker v-model:value="element.backgroundColor"
+                                    :label="$tc('marketing-banner.detail.backgroundColor')"
+                                    name="marketingBannerBackgroundColor"
+                                    color-output="hex"></sw-colorpicker>
+
+                    <sw-colorpicker v-model:value="element.textColor" :label="$tc('marketing-banner.detail.textColor')"
+                                    name="marketingBannerTextColor"
+                                    color-output="hex"></sw-colorpicker>
+
                     <sw-code-editor
                             :label="$tc('marketing-banner.detail.css')"
                             ref="cssEditor"

@@ -13,6 +13,22 @@ Shopware.Component.override('sw-order-detail-details', {
             if (this.order.deliveries.first().stateMachineState.technicalName !== 'open') {
                 return true
             }
-        }
+        },
+
+        paymentMethodCriteria() {
+            const criteria = new Criteria(1, 25);
+
+            criteria.addFilter(Criteria.equals('active', 1));
+
+            return criteria;
+        },
+
+        shippingMethodCriteria() {
+            const criteria = new Criteria(1, 25);
+
+            criteria.addFilter(Criteria.equals('active', 1));
+
+            return criteria;
+        },
     }
 });

@@ -31,6 +31,7 @@
       "contentImage": "Image",
       "backgroundColor": "Background color",
       "textColor": "Text color",
+      "css": "Benutzerdefiniertes CSS",
       "border": "Border",
       "bannerConditionLabel": "Condition",
       "bannerConditionNo": "No restriction",

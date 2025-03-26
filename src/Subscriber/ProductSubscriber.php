@@ -6,6 +6,7 @@ namespace AlphaFoundation\Subscriber;
 
 use AlphaFoundation\Core\Content\MarketingBanner\MarketingBannerEntity;
 use AlphaFoundation\Core\Content\Product\ProductFeatureBuilder;
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Category\Event\NavigationLoadedEvent;
 use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotCollection;
 use Shopware\Core\Content\Cms\DataResolver\CmsSlotsDataResolver;
@@ -16,7 +17,7 @@ use Shopware\Core\Content\Product\Events\ProductListingResultEvent;
 use Shopware\Core\Content\Product\ProductEvents;
 use Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingResult;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -25,6 +26,7 @@ use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 use Shopware\Storefront\Page\Product\ProductPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProductSubscriber implements EventSubscriberInterface
 {
@@ -32,12 +34,13 @@ class ProductSubscriber implements EventSubscriberInterface
     public const CATEGORY_BANNER_TYPE = 'category';
 
     public function __construct(
-        private readonly SalesChannelRepository $productRepository,
-        private readonly EntityRepository $featureSetRepository,
-        private readonly ProductFeatureBuilder $productFeatureBuilder,
-        private readonly EntityRepository $marketingBannerRepository,
-        private readonly DefinitionInstanceRegistry $definitionInstanceRegistry,
-        private readonly CmsSlotsDataResolver $resolver
+        protected readonly RequestStack $requestStack,
+        protected readonly Connection $connection,
+        protected readonly SalesChannelRepository $productRepository,
+        protected readonly EntityRepository $featureSetRepository,
+        protected readonly ProductFeatureBuilder $productFeatureBuilder,
+        protected readonly EntityRepository $marketingBannerRepository,
+        protected readonly CmsSlotsDataResolver $resolver
     ) {
     }
 
@@ -83,7 +86,7 @@ class ProductSubscriber implements EventSubscriberInterface
         $marketingBanners = $this->marketingBannerRepository->search($this->buildProductMarketingBannerCriteria(self::CATEGORY_BANNER_TYPE), $event->getContext())->getEntities();
         /** @var MarketingBannerEntity $marketingBanner */
         foreach ($marketingBanners as $marketingBanner) {
-            $marketingRules = $marketingBanner->getRules()->getIds() ?? [];
+            $marketingRules = $marketingBanner->getRules()?->getIds() ?? [];
 
             if (empty($marketingRules)) {
                 continue;
@@ -116,6 +119,10 @@ class ProductSubscriber implements EventSubscriberInterface
      */
     public function onProductsLoaded(SalesChannelEntityLoadedEvent $event)
     {
+        if ( $event->getContext()->getVersionId() !== Defaults::LIVE_VERSION ) {
+            return;
+        }
+
         /** @var SalesChannelProductEntity $productEntity */
         foreach ($event->getEntities() as $productEntity) {
             $variantListingConfig = $productEntity->getVariantListingConfig();
@@ -156,7 +163,9 @@ class ProductSubscriber implements EventSubscriberInterface
     {
         $page = $event->getPage();
         $salesChannelRulesIds = $event->getSalesChannelContext()->getRuleIds();
-        $marketingBanners = $this->marketingBannerRepository->search($this->buildProductMarketingBannerCriteria(self::PRODUCT_BANNER_TYPE), $event->getContext())->getEntities();
+        $criteria = $this->buildProductMarketingBannerCriteria(self::PRODUCT_BANNER_TYPE);
+
+        $marketingBanners = $this->marketingBannerRepository->search($criteria, $event->getContext())->getEntities();
 
         $categoryTree = $event->getPage()->getProduct()->getCategoryTree();
 
@@ -201,6 +210,7 @@ class ProductSubscriber implements EventSubscriberInterface
     {
         $criteria = new Criteria();
         $criteria->addAssociation('rules');
+        $criteria->addFilter(new EqualsFilter('active', 1));
         $criteria->addFilter(new EqualsFilter('bannerType', $bannerType));
 
         return $criteria;
@@ -212,7 +222,7 @@ class ProductSubscriber implements EventSubscriberInterface
         $marketingBanners = $this->marketingBannerRepository->search($this->buildProductMarketingBannerCriteria(self::CATEGORY_BANNER_TYPE), $event->getContext())->getEntities();
         /** @var MarketingBannerEntity $marketingBanner */
         foreach ($marketingBanners as $marketingBanner) {
-            $marketingRules = $marketingBanner->getRules()->getIds() ?? [];
+            $marketingRules = $marketingBanner->getRules()?->getIds() ?? [];
 
             if (empty($marketingRules)) {
                 continue;
