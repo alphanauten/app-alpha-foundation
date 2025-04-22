@@ -11,11 +11,9 @@ use Shopware\Core\Content\Category\Event\NavigationLoadedEvent;
 use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotCollection;
 use Shopware\Core\Content\Cms\DataResolver\CmsSlotsDataResolver;
 use Shopware\Core\Content\Cms\DataResolver\ResolverContext\ResolverContext;
-use Shopware\Core\Content\Cms\Events\CmsPageLoadedEvent;
 use Shopware\Core\Content\Product\Events\ProductListingCriteriaEvent;
 use Shopware\Core\Content\Product\Events\ProductListingResultEvent;
 use Shopware\Core\Content\Product\ProductEvents;
-use Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingResult;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -131,11 +129,23 @@ class ProductSubscriber implements EventSubscriberInterface
                 'mainVariantId' => null,
             ]);
 
-            if ($productEntity->getCalculatedCheapestPrice() && $productEntity->getChildCount() > 0) {
-                $productEntity->setCalculatedPrice(
-                    $productEntity->getCalculatedCheapestPrice()
-                );
+            $calculatedPrice = $productEntity->getCalculatedPrice();
+
+            if ($productEntity->getChildren()?->count() > 0) {
+                foreach ($productEntity->getChildren() as $child) {
+                    /** @var SalesChannelProductEntity $child */
+                    $childCalculatedPrice = $child->getCalculatedPrice();
+                    $childReferencePrice = $childCalculatedPrice?->getReferencePrice();
+                    if (!$childReferencePrice) {
+                        continue;
+                    }
+                    if ($childCalculatedPrice->getUnitPrice() < $calculatedPrice->getUnitPrice()) {
+                        $calculatedPrice = $childCalculatedPrice;
+                    }
+                }
             }
+
+            $productEntity->setCalculatedPrice($calculatedPrice);
         }
 
         $this->extendProductsWithFeatures($event);

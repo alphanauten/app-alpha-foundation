@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace HuntacTheme\Twig;
+namespace AlphaFoundation\Twig;
 
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 use SepaQr\Data;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
-use chillerlan\QRCode\QRCode;
-use chillerlan\QRCode\QROptions;
 
 class SepaQRCode extends AbstractExtension
 {
@@ -20,9 +20,9 @@ class SepaQRCode extends AbstractExtension
     public function createSepaQRCode(float $amount, string $ordernumber = '')
     {
         $paymentData = Data::create()
-            ->setName('HunTac GmbH & Co. KG')
-            ->setIban('DE76265400700550019400')
-            ->setBic('COBADEFFxxx')
+            ->setName('NAME')
+            ->setIban('IBAN')
+            ->setBic('BIC')
             ->setInformation($ordernumber)
             ->setAmount($amount); // The amount in Euro
 

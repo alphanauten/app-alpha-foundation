@@ -2,6 +2,10 @@
     "sw-order": {
         "list": {
             "columnBillingPhone": "Telefon"
+        },
+        "detailBase": {
+            "columnAvailableStock": "Bestand",
+            "columnExternallySent": "Ext. gesendet"
         }
     }
 }

@@ -1,5 +1,7 @@
 import template from './sw-order-detail-details.html.twig';
 
+const {Criteria} = Shopware.Data;
+
 Shopware.Component.override('sw-order-detail-details', {
     template,
 

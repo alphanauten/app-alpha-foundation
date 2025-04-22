@@ -1,7 +1,7 @@
 {
     "name": "alpha/foundation",
     "description": "Alphanauten Foundation",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "type": "shopware-platform-plugin",
     "license": "proprietary",
     "authors": [

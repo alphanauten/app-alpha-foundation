@@ -9,13 +9,10 @@ import template from './pw-erp-product-stock-total-amounts-item.html.twig';
 Shopware.Component.override('pw-erp-stock-per-warehouse-grid', {
     template,
 
-
-
     methods: {
 
         getColumns() {
             const c = this.$super('getColumns')
-            console.log(c)
 
             return c.map((column) => {
                 return {
