@@ -109,7 +109,6 @@ Component.register('marketing-banner-detail', {
         async createdComponent() {
             this.isLoading = true;
 
-            this.repository = this.repositoryFactory.create('marketing_banner');
             this.categoriesCollection = new EntityCollection('/category', 'category', Shopware.Context.api);
             this.propertyGroupOptionCollection = new EntityCollection('/property-group-option', 'property_group_option', Shopware.Context.api);
 
@@ -117,6 +116,15 @@ Component.register('marketing-banner-detail', {
             await this.loadCategories();
             await this.loadPropertyGroupOptions();
 
+            this.isLoading = false;
+        },
+
+        async getBanner() {
+            const criteria = new Criteria();
+            criteria.setIds([this.$route.params.id]);
+            criteria.addAssociation('translations')
+            this.element = await this.bannerRepository.search(criteria, Context.api);
+            this.element = this.element.first();
             if (this.element.type) {
                 this.cmsDataResolverService.resolve({ sections: [{ blocks: [{ slots: [this.element] }] }] }).then(() => {
                     this.initElementConfig(this.element.type);
@@ -128,11 +136,6 @@ Component.register('marketing-banner-detail', {
                     });
                 });
             }
-            this.isLoading = false;
-        },
-
-        async getBanner() {
-            this.element = await this.repository.get(this.$route.params.id, Context.api);
         },
 
         async loadCategories() {
@@ -217,10 +220,9 @@ Component.register('marketing-banner-detail', {
             this.isSaveSuccessful = false;
             this.isLoading = true;
 
-            this.repository
+            this.bannerRepository
                 .save(this.element, Context.api)
                 .then(() => {
-                    this.getBanner();
                     this.createNotificationSuccess({
                         title: this.$tc('global.default.success'),
                         message: ''
@@ -236,7 +238,7 @@ Component.register('marketing-banner-detail', {
                 .finally(() => this.isLoading = false);
         },
         onChangeLanguage() {
-            this.getItem();
+            this.getBanner();
         },
     }
 });

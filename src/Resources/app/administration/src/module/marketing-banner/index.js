@@ -7,9 +7,6 @@ import './page/marketing-banner-create';
 import './component/alpha-rule-select';
 import './views/sw-settings-rule-detail-assignments';
 
-import deDE from './snippet/de-DE.json';
-import enGB from './snippet/en-GB.json';
-
 Module.register('marketing-banner', {
     type: 'plugin',
     name: 'marketing-banner',

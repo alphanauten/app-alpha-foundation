@@ -13,7 +13,7 @@ class SepaQRCode extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('sepaQRCode', [$this, 'createSepaQRCode']),
+            new TwigFunction('sepaQRCode', $this->createSepaQRCode(...)),
         ];
     }
 

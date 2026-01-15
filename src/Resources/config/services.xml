@@ -20,6 +20,14 @@
             <tag name="shopware.entity.extension"/>
         </service>
 
+        <service id="AlphaFoundation\Core\Content\Product\ProductExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\Product\ListingSetExtension\ListingSetExtensionDefinition">
+            <tag name="shopware.entity.definition" entity="alpha_product_extension_listing_feature_set" />
+        </service>
+
         <service
                 id="AlphaFoundation\Core\Content\MarketingBanner\Aggregate\MarketingBannerRule\MarketingBannerRuleDefinition">
             <tag name="shopware.entity.definition" entity="marketing_banner_rule"/>

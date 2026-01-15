@@ -2,6 +2,11 @@
     "sw-product": {
         "list": {
             "purchasePrice": "Purchase price"
+        },
+        "featureSets": {
+            "templateSelectFieldLabel": "Cart and checkout",
+            "listingTemplateSelectFieldLabel": "Listing and detail page",
+            "newDescriptionBody": "Essential Characteristics help you to define what is important about your products. These characteristics are shown prominently in your customers' shopping carts and during checkout. Additionally you can select a template for product listings and detail pages"
         }
     }
 }

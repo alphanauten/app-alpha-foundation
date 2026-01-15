@@ -1,13 +1,13 @@
-
 <!-- eslint-disable-next-line sw-deprecation-rules/no-twigjs-blocks -->
 {% block sw_product_list_grid_columns %}
-    {% parent %}
+    {% parent() %}
 
     <!-- eslint-disable-next-line sw-deprecation-rules/no-twigjs-blocks -->
     {% block sw_product_list_grid_columns_purchase_price %}
-        <template #column-purchasePrice="{ item }"
-        >
-            <span v-if="item.purchasePrices">{{ currencyFilter(getCurrencyPriceByCurrencyId(defaultCurrency.id, item.purchasePrices).gross, defaultCurrency.isoCode) }}</span>
+        <template #column-purchasePrice="{ item }">
+            <span v-if="item.purchasePrices">
+                {{ currencyFilter(getCurrencyPriceByCurrencyId(defaultCurrency.id, item.purchasePrices).gross, defaultCurrency.isoCode) }}
+            </span>
             <span v-else>-</span>
         </template>
     {% endblock %}

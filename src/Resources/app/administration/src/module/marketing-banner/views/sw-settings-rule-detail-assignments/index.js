@@ -1,11 +1,13 @@
-const { Component, Mixin, Context } = Shopware;
+const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
 Component.override('sw-settings-rule-detail-assignments', {
     computed: {
         associationEntitiesConfig() {
             let config = this.$super('associationEntitiesConfig');
+            console.log(config);
             config.push({
+                id: 'marketing_banner',
                 entityName: 'marketing_banner',
                 criteria: () => {
                     const criteria = new Criteria();
@@ -14,6 +16,8 @@ Component.override('sw-settings-rule-detail-assignments', {
 
                     return criteria;
                 },
+                allowAdd: false,
+                label: 'marketing-banner.general.mainMenuItemGeneral',
                 detailRoute: 'marketing.banner.detail',
                 gridColumns: [{
                     property: 'name',
@@ -24,6 +28,7 @@ Component.override('sw-settings-rule-detail-assignments', {
                     allowEdit: false,
                 }],
             });
+            console.log(config);
             return config;
         }
     }

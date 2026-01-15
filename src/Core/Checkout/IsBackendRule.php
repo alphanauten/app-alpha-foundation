@@ -2,6 +2,7 @@
 
 namespace AlphaFoundation\Core\Checkout;
 
+use Monolog\Logger;
 use Shopware\Core\Content\Product\Cart\ProductCartProcessor;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Rule;
@@ -24,15 +25,19 @@ class IsBackendRule extends Rule
     /**
      * @internal
      */
-    public function __construct(bool $isAdmin = true)
+    public function __construct()
     {
         parent::__construct();
-        $this->isAdmin = $isAdmin;
+        $this->isAdmin = true;
     }
 
     public function match(RuleScope $scope): bool
     {
-        return $scope->getSalesChannelContext()->hasPermission(ProductCartProcessor::ALLOW_PRODUCT_PRICE_OVERWRITES);
+        $isAdmin = $scope->getSalesChannelContext()->hasPermission(ProductCartProcessor::ALLOW_PRODUCT_PRICE_OVERWRITES);
+        if ($this->isAdmin) {
+            return $isAdmin;
+        }
+        return !$isAdmin;
     }
 
     public function getConstraints(): array

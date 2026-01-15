@@ -3,10 +3,9 @@
 {% block component_product_box_variant_characteristics %}
     {{ parent() }}
 
-    {% if product.extensions.features is not empty %}
+    {% if product.extensions.listingFeatures is not empty %}
         {% sw_include '@Storefront/storefront/component/product/feature/list.html.twig' with {
-            'features': product.extensions.features
+            'features': product.extensions.listingFeatures
         } %}
     {% endif %}
-
 {% endblock %}

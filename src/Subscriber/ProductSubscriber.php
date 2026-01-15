@@ -156,17 +156,9 @@ class ProductSubscriber implements EventSubscriberInterface
      *
      * @param SalesChannelEntityLoadedEvent $event The event containing the entities and context.
      */
-    public function extendProductsWithFeatures(SalesChannelEntityLoadedEvent $event)
+    public function extendProductsWithFeatures(SalesChannelEntityLoadedEvent $event): void
     {
-        $criteria = new Criteria(['018caa63e3d5722c9f3bcbe91fb4c1b6']);
-        $listingFeatureSet = $this->featureSetRepository->search($criteria, $event->getContext())->first();
-
-        if (!$listingFeatureSet) {
-            return;
-        }
-
-        $this->productFeatureBuilder->prepare($event->getEntities(), $listingFeatureSet, $event->getSalesChannelContext());
-        $this->productFeatureBuilder->add($event->getEntities(), $listingFeatureSet);
+        $this->productFeatureBuilder->add($event->getEntities(),$event->getSalesChannelContext());
     }
 
     public function onProductPageLoaded(ProductPageLoadedEvent $event)
@@ -253,6 +245,7 @@ class ProductSubscriber implements EventSubscriberInterface
         $resolverContext = new ResolverContext($salesChannelContext, new Request());
 
         $this->resolver->resolve($cmsSlotCollection, $resolverContext);
+
 
         $event->getResult()->addExtension('alphaMarketingBanners', $cmsSlotCollection);
     }

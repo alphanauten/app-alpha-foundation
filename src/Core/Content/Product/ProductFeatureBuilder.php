@@ -2,8 +2,8 @@
 
 namespace AlphaFoundation\Core\Content\Product;
 
+use AlphaFoundation\Core\Content\Product\ListingSetExtension\ListingSetExtensionEntity;
 use Shopware\Core\Content\Product\Aggregate\ProductFeatureSet\ProductFeatureSetDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductFeatureSet\ProductFeatureSetEntity;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionEntity;
 use Shopware\Core\Defaults;
@@ -30,41 +30,39 @@ class ProductFeatureBuilder
     {
     }
 
-    public function prepare(iterable $products, ProductFeatureSetEntity $featureSet, SalesChannelContext $context): void
+    private function prepare(iterable $products, SalesChannelContext $context): ArrayStruct
     {
-        $this->loadCustomFields($products, $featureSet, $context);
+        return $this->loadCustomFields($products, $context);
     }
 
-    public function add(iterable $products, ProductFeatureSetEntity $listingFeatureSet): void
+    public function add(iterable $products, SalesChannelContext $context): void
     {
+        $customFields = $this->prepare($products, $context);
         foreach ($products as $product) {
             if (!($product instanceof SalesChannelProductEntity)) {
                 continue;
             }
 
-            $product->addExtension('features', $this->buildFeatures($product, $listingFeatureSet));
+            $product->addExtension('listingFeatures', $this->buildFeatures($product, $customFields));
         }
     }
 
-    private function buildFeatures(SalesChannelProductEntity $product, ProductFeatureSetEntity $featureSet): ArrayStruct
+    private function buildFeatures(SalesChannelProductEntity $product, ArrayStruct $customFields): ArrayStruct
     {
+        /**
+         * @var ListingSetExtensionEntity $listingSetExtension
+         */
+        $listingSetExtension = $product->getExtension('listingFeatureSet');
+        if(is_null($listingSetExtension)){
+            return new ArrayStruct();
+        }
+        $sortedFeatures = $listingSetExtension->getListingFeatureSet()->getFeatures();
+        if ($sortedFeatures === null) {
+            return new ArrayStruct();
+        }
+
         $features = [];
-
-        $customFields = $featureSet->getExtension('customFields');
-
-        if ($featureSet === null) {
-            return new ArrayStruct();
-        }
-
-        $sorted = $featureSet->getFeatures();
-
-        if (empty($sorted)) {
-            return new ArrayStruct();
-        }
-
-        usort($sorted, static fn(array $a, array $b) => $a['position'] <=> $b['position']);
-
-        foreach ($sorted as $feature) {
+        foreach ($sortedFeatures as $feature) {
             if ($feature['type'] === ProductFeatureSetDefinition::TYPE_PRODUCT_ATTRIBUTE) {
                 $features[] = $this->getAttribute($feature['name'], $product);
 
@@ -78,20 +76,16 @@ class ProductFeatureBuilder
             }
 
             if ($feature['type'] === ProductFeatureSetDefinition::TYPE_PRODUCT_CUSTOM_FIELD) {
-                $features[] = $this->getCustomField($feature['name'], $customFields, $product);
+                $features[] = $this->getCustomField($feature['name'],$customFields, $product);
 
                 continue;
-            }
-
-            if ($feature['type'] === ProductFeatureSetDefinition::TYPE_PRODUCT_REFERENCE_PRICE) {
-                $features[] = $this->getReferencePrice($product);
             }
         }
 
         return new ArrayStruct(array_filter($features));
     }
 
-    private function loadCustomFields(iterable $products, ProductFeatureSetEntity $featureSet, SalesChannelContext $context): void
+    private function loadCustomFields(iterable $products, SalesChannelContext $context): ArrayStruct
     {
         $required = [];
 
@@ -106,7 +100,7 @@ class ProductFeatureBuilder
             $names = array_keys($product->getCustomFields());
 
             foreach ($names as $name) {
-                if (!$this->isRequiredCustomField($name, $product, $featureSet)) {
+                if (!$this->isRequiredCustomField($name, $product)) {
                     continue;
                 }
 
@@ -122,7 +116,7 @@ class ProductFeatureBuilder
         }
 
         if (empty($required)) {
-            return;
+            return new ArrayStruct();
         }
 
         $criteria = (new Criteria())->addFilter(new EqualsAnyFilter('name', $required));
@@ -134,15 +128,24 @@ class ProductFeatureBuilder
             $customFieldsSet->set($key, $field);
         }
 
-        $featureSet->addExtension('customFields', $customFieldsSet);
+        return $customFieldsSet;
     }
 
     /**
      * Checks wether a custom field name is part of the provided product's feature set
      */
-    private function isRequiredCustomField(string $name, SalesChannelProductEntity $product, ProductFeatureSetEntity $featureSet): bool
+    private function isRequiredCustomField(string $name, SalesChannelProductEntity $product): bool
     {
-        foreach ($featureSet->getFeatures() as $feature) {
+        /**
+         * @var ListingSetExtensionEntity $listingSetExtension
+         */
+        $listingSetExtension = $product->getExtension('listingFeatureSet');
+        if(is_null($listingSetExtension)){
+            return false;
+        }
+        $sortedFeatures = $listingSetExtension->getListingFeatureSet()->getFeatures();
+
+        foreach ($sortedFeatures as $feature) {
             if ($feature['type'] !== ProductFeatureSetDefinition::TYPE_PRODUCT_CUSTOM_FIELD) {
                 continue;
             }
@@ -221,33 +224,20 @@ class ProductFeatureBuilder
 
     private function getCustomField(string $name, Struct|null $data, SalesChannelProductEntity $product): ?array
     {
-        $fieldKey = sprintf('custom-field-%s', $name);
+        $fieldKey = \sprintf('custom-field-%s', $name);
         $translation = $product->getTranslation('customFields');
 
-        if ($data === null || $translation === null) {
+        if ($translation === null || !\array_key_exists($name, $translation)) {
             return null;
         }
 
-        $stringTemplate = "%s%s";
-        $unit = '';
-
-        switch ($name) {
-            case "min_max_casting_weight":
-                return $this->getCastingWeightCustomFields($name, $data, $product);
-                break;
-            case "rod_length":
-                $unit = 'cm';
-                break;
-        }
-
-        if (!$data->has($fieldKey) || !\array_key_exists($name, $translation)) {
+        if (!$data->has($fieldKey)) {
             return null;
         }
 
         $customField = $data->get($fieldKey);
         $label = $this->getCustomFieldLabel($customField);
-
-        if (empty($label)) {
+        if (!\is_string($label)) {
             return null;
         }
 
@@ -256,17 +246,18 @@ class ProductFeatureBuilder
             'value' => [
                 'id' => $customField->getId(),
                 'type' => $customField->getType(),
-                'content' => sprintf($stringTemplate, $translation[$name], substr($translation[$name], -strlen($unit), strlen($unit)) === $unit ? '' : $unit),
+                'content' => $translation[$name],
             ],
             'type' => ProductFeatureSetDefinition::TYPE_PRODUCT_CUSTOM_FIELD,
         ];
     }
 
-    private function getCastingWeightCustomFields(string $name, Struct|null $data, SalesChannelProductEntity $product) {
+    private function getCastingWeightCustomFields(string $name, Struct|null $data, SalesChannelProductEntity $product)
+    {
         $fieldKey = sprintf('custom-field-%s', $name);
         $translation = $product->getTranslation('customFields');
 
-        if ( !\array_key_exists('rod_min_casting_weight', $translation) && !\array_key_exists('rod_max_casting_weight', $translation) ) {
+        if (!\array_key_exists('rod_min_casting_weight', $translation) && !\array_key_exists('rod_max_casting_weight', $translation)) {
             return null;
         }
         $label = 'Wurfgewicht';
@@ -279,31 +270,6 @@ class ProductFeatureBuilder
                 'content' => $translation['rod_min_casting_weight'] . "-" . $translation['rod_max_casting_weight'] . 'g',
             ],
             'type' => ProductFeatureSetDefinition::TYPE_PRODUCT_CUSTOM_FIELD,
-        ];
-    }
-
-    private function getReferencePrice(SalesChannelProductEntity $product): ?array
-    {
-        if ($product->getPrice() === null) {
-            return null;
-        }
-
-        $referencePrice = $product->getPrice()->getReferencePrice();
-        $unit = $product->getUnit();
-
-        if ($referencePrice === null || $unit === null) {
-            return null;
-        }
-
-        return [
-            'label' => ProductFeatureSetDefinition::TYPE_PRODUCT_REFERENCE_PRICE,
-            'value' => [
-                'price' => $referencePrice->getPrice(),
-                'purchaseUnit' => $referencePrice->getPurchaseUnit(),
-                'referenceUnit' => $referencePrice->getReferenceUnit(),
-                'unitName' => $unit->getTranslation('name'),
-            ],
-            'type' => ProductFeatureSetDefinition::TYPE_PRODUCT_REFERENCE_PRICE,
         ];
     }
 

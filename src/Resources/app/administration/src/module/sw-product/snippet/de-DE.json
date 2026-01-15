@@ -2,6 +2,11 @@
     "sw-product": {
         "list": {
             "purchasePrice": "Einkaufspreis"
+        },
+        "featureSets": {
+            "checkoutTemplateSelectFieldLabel": "Warenkorb und Kasse",
+            "listingTemplateSelectFieldLabel": "Listing und Detailseite",
+            "newDescriptionBody": "Wesentliche Merkmale helfen Dir, relevante Merkmale Deiner Produkte festzulegen. Diese Merkmale werden hervorgehoben im Warenkorb und an der Kasse dargestellt. Zusätzlich kannst Du ein Template für Kategorie- und Produktdetailseiten hinzufügen."
         }
     }
 }
