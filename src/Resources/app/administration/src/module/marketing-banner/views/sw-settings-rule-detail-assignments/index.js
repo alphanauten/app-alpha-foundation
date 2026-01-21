@@ -5,7 +5,6 @@ Component.override('sw-settings-rule-detail-assignments', {
     computed: {
         associationEntitiesConfig() {
             let config = this.$super('associationEntitiesConfig');
-            console.log(config);
             config.push({
                 id: 'marketing_banner',
                 entityName: 'marketing_banner',
@@ -28,7 +27,6 @@ Component.override('sw-settings-rule-detail-assignments', {
                     allowEdit: false,
                 }],
             });
-            console.log(config);
             return config;
         }
     }

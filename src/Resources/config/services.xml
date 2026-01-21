@@ -10,6 +10,7 @@
         <service id="AlphaFoundation\Core\Content\Product\ProductFeatureBuilder">
             <argument type="service" id="custom_field.repository"/>
             <argument type="service" id="Shopware\Core\System\Locale\LanguageLocaleCodeProvider"/>
+            <argument type="service" id="product.repository"/>
         </service>
 
         <service id="AlphaFoundation\Core\Content\MarketingBanner\MarketingBannerDefinition">
@@ -25,7 +26,7 @@
         </service>
 
         <service id="AlphaFoundation\Core\Content\Product\ListingSetExtension\ListingSetExtensionDefinition">
-            <tag name="shopware.entity.definition" entity="alpha_product_extension_listing_feature_set" />
+            <tag name="shopware.entity.definition" entity="alpha_product_extension_listing_feature_set"/>
         </service>
 
         <service

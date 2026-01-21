@@ -7,6 +7,7 @@ use Shopware\Core\Content\Product\Aggregate\ProductFeatureSet\ProductFeatureSetD
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionEntity;
 use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
@@ -25,7 +26,8 @@ class ProductFeatureBuilder
      */
     public function __construct(
         private readonly EntityRepository           $customFieldRepository,
-        private readonly LanguageLocaleCodeProvider $languageLocaleProvider
+        private readonly LanguageLocaleCodeProvider $languageLocaleProvider,
+        private readonly EntityRepository           $productRepository
     )
     {
     }
@@ -38,11 +40,25 @@ class ProductFeatureBuilder
     public function add(iterable $products, SalesChannelContext $context): void
     {
         $customFields = $this->prepare($products, $context);
+        //getParents
+        $parentIds = [];
+        foreach ($products as $product) {
+            if (!is_null($product->getParentId())) {
+                $parentIds[] = $product->getParentId();
+            }
+        }
+        $parents = null;
+        if (count($parentIds) > 0) {
+            $parents = $this->productRepository->search(new Criteria($parentIds), $context->getContext())->getElements();
+        }
+
         foreach ($products as $product) {
             if (!($product instanceof SalesChannelProductEntity)) {
                 continue;
             }
-
+            if (!is_null($product->getParentId())) {
+                $product->setParent($parents[$product->getParentId()]);
+            }
             $product->addExtension('listingFeatures', $this->buildFeatures($product, $customFields));
         }
     }
@@ -52,8 +68,8 @@ class ProductFeatureBuilder
         /**
          * @var ListingSetExtensionEntity $listingSetExtension
          */
-        $listingSetExtension = $product->getExtension('listingFeatureSet');
-        if(is_null($listingSetExtension)){
+        $listingSetExtension = $product->getExtension('listingFeatureSet') ?? $product->getParent()?->getExtension('listingFeatureSet');
+        if (is_null($listingSetExtension)) {
             return new ArrayStruct();
         }
         $sortedFeatures = $listingSetExtension->getListingFeatureSet()->getFeatures();
@@ -76,7 +92,7 @@ class ProductFeatureBuilder
             }
 
             if ($feature['type'] === ProductFeatureSetDefinition::TYPE_PRODUCT_CUSTOM_FIELD) {
-                $features[] = $this->getCustomField($feature['name'],$customFields, $product);
+                $features[] = $this->getCustomField($feature['name'], $customFields, $product);
 
                 continue;
             }
@@ -140,7 +156,7 @@ class ProductFeatureBuilder
          * @var ListingSetExtensionEntity $listingSetExtension
          */
         $listingSetExtension = $product->getExtension('listingFeatureSet');
-        if(is_null($listingSetExtension)){
+        if (is_null($listingSetExtension)) {
             return false;
         }
         $sortedFeatures = $listingSetExtension->getListingFeatureSet()->getFeatures();

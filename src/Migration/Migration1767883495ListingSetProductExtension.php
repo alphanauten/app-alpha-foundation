@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `alpha_product_extension_listing_feature_set` (
 `id` BINARY(16) NOT NULL,
 `product_id` BINARY(16) NOT NULL,
 `product_version_id` BINARY(16) NOT NULL,
-`feature_set_id` BINARY(16) NOT NULL,
+`feature_set_id` BINARY(16),
 `created_at` DATETIME(3) NOT NULL,
 `updated_at` DATETIME(3) NULL,
 PRIMARY KEY (`id`),
