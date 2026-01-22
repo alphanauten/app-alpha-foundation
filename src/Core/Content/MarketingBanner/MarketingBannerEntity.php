@@ -8,7 +8,7 @@ use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotEntity;
 
 class MarketingBannerEntity extends CmsSlotEntity
 {
-    protected $slot = 'content';
+    protected string $slot = 'content';
 
     /**
      * @var string
@@ -89,12 +89,12 @@ class MarketingBannerEntity extends CmsSlotEntity
     /**
      * @var \DateTimeInterface|null
      */
-    protected $validFrom;
+    protected ?\DateTimeInterface $validFrom;
 
     /**
      * @var \DateTimeInterface|null
      */
-    protected $validUntil;
+    protected ?\DateTimeInterface $validUntil;
 
     public function getName(): string
     {

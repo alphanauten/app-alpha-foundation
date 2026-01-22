@@ -66,22 +66,12 @@ class CustomFieldInstaller implements InstallerInterface
 
     public function install(InstallContext $context): void
     {
-        foreach ($this->customFieldSets as $customFieldSet) {
-            $this->upsertCustomFieldSet($customFieldSet, $context->getContext());
-        }
-        foreach ($this->customFields as $customField) {
-            $this->upsertCustomField($customField, $context->getContext());
-        }
+
     }
 
     public function update(UpdateContext $context): void
     {
-        foreach ($this->customFieldSets as $customFieldSet) {
-            $this->upsertCustomFieldSet($customFieldSet, $context->getContext());
-        }
-        foreach ($this->customFields as $customField) {
-            $this->upsertCustomField($customField, $context->getContext());
-        }
+
     }
 
     public function uninstall(UninstallContext $context): void
@@ -96,12 +86,7 @@ class CustomFieldInstaller implements InstallerInterface
 
     public function activate(ActivateContext $context): void
     {
-        foreach ($this->customFieldSets as $customFieldSet) {
-            $this->upsertCustomFieldSet($customFieldSet, $context->getContext());
-        }
-        foreach ($this->customFields as $customField) {
-            $this->upsertCustomField($customField, $context->getContext());
-        }
+
     }
 
     public function deactivate(DeactivateContext $context): void
@@ -119,20 +104,6 @@ class CustomFieldInstaller implements InstallerInterface
         //        $this->removeObsoleteCustomFieldSets($context->getContext());
     }
 
-    private function upsertCustomField(array $customField, Context $context): void
-    {
-        $data = [
-            'id' => $customField['id'],
-            'name' => $customField['name'],
-            'type' => $customField['type'],
-            'active' => true,
-            'customFieldSetId' => $customField['customFieldSetId'],
-            'config' => $customField['config'] ?? [],
-        ];
-
-        $this->customFieldRepository->upsert([$data], $context);
-    }
-
     private function deactivateCustomField(array $customField, Context $context): void
     {
         $data = [
@@ -144,29 +115,6 @@ class CustomFieldInstaller implements InstallerInterface
         ];
 
         $this->customFieldRepository->upsert([$data], $context);
-    }
-
-    private function upsertCustomFieldSet(array $customFieldSet, Context $context): void
-    {
-        $data = [
-            'id' => $customFieldSet['id'],
-            'name' => $customFieldSet['name'],
-            'config' => $customFieldSet['config'],
-            'active' => true,
-            'relations' => [
-                [
-                    'id' => $customFieldSet['relation']['id'],
-                    'entityName' => $customFieldSet['relation']['entityName'],
-                ],
-            ],
-        ];
-
-        $this->customFieldSetRepository->upsert([$data], $context);
-    }
-
-    private function removeObsoleteCustomFieldSets(Context $context): void
-    {
-        $this->customFieldSetRepository->delete([['id' => Uuid::fromStringToHex(self::FOUNDATION_FIELDSET)]], $context);
     }
 
     private function deactivateCustomFieldSet(array $customFieldSet, Context $context): void

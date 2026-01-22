@@ -11,16 +11,22 @@ use Shopware\Core\Content\Category\Event\NavigationLoadedEvent;
 use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotCollection;
 use Shopware\Core\Content\Cms\DataResolver\CmsSlotsDataResolver;
 use Shopware\Core\Content\Cms\DataResolver\ResolverContext\ResolverContext;
+use Shopware\Core\Content\Product\Events\ProductCrossSellingCriteriaEvent;
+use Shopware\Core\Content\Product\Events\ProductGatewayCriteriaEvent;
 use Shopware\Core\Content\Product\Events\ProductListingCriteriaEvent;
 use Shopware\Core\Content\Product\Events\ProductListingResultEvent;
+use Shopware\Core\Content\Product\Events\ProductSearchCriteriaEvent;
+use Shopware\Core\Content\Product\Events\ProductSuggestCriteriaEvent;
 use Shopware\Core\Content\Product\ProductEvents;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Event\NestedEvent;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelEntityLoadedEvent;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
+use Shopware\Storefront\Page\Product\ProductPageCriteriaEvent;
 use Shopware\Storefront\Page\Product\ProductPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,14 +38,15 @@ class ProductSubscriber implements EventSubscriberInterface
     public const CATEGORY_BANNER_TYPE = 'category';
 
     public function __construct(
-        protected readonly RequestStack $requestStack,
-        protected readonly Connection $connection,
+        protected readonly RequestStack           $requestStack,
+        protected readonly Connection             $connection,
         protected readonly SalesChannelRepository $productRepository,
-        protected readonly EntityRepository $featureSetRepository,
-        protected readonly ProductFeatureBuilder $productFeatureBuilder,
-        protected readonly EntityRepository $marketingBannerRepository,
-        protected readonly CmsSlotsDataResolver $resolver
-    ) {
+        protected readonly EntityRepository       $featureSetRepository,
+        protected readonly ProductFeatureBuilder  $productFeatureBuilder,
+        protected readonly EntityRepository       $marketingBannerRepository,
+        protected readonly CmsSlotsDataResolver   $resolver
+    )
+    {
     }
 
     /**
@@ -50,7 +57,11 @@ class ProductSubscriber implements EventSubscriberInterface
         // Return the events to listen to as array like this:  <event to listen to> => <method to execute>
         return [
             ProductEvents::PRODUCT_LISTING_CRITERIA => 'extendListingCriteria',
-            'sales_channel.'.ProductEvents::PRODUCT_LOADED_EVENT => 'onProductsLoaded',
+            ProductPageCriteriaEvent::class => 'extendListingCriteria',
+            ProductSearchCriteriaEvent::class => 'extendListingCriteria',
+            ProductSuggestCriteriaEvent::class => 'extendListingCriteria',
+            ProductCrossSellingCriteriaEvent::class => 'extendListingCriteria',
+            'sales_channel.' . ProductEvents::PRODUCT_LOADED_EVENT => 'onProductsLoaded',
             ProductPageLoadedEvent::class => 'onProductPageLoaded',
             NavigationLoadedEvent::class => 'onNavigationLoaded',
             ProductListingResultEvent::class => 'onCmsPageLoaded',
@@ -58,10 +69,10 @@ class ProductSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param ProductListingCriteriaEvent $event
+     *
      * @return void
      */
-    public function extendListingCriteria(ProductListingCriteriaEvent $event): void
+    public function extendListingCriteria($event): void
     {
         $criteria = $event->getCriteria();
         $criteria->addAssociation('properties.group');
@@ -76,7 +87,7 @@ class ProductSubscriber implements EventSubscriberInterface
     {
         $activeCategory = $event->getNavigation()->getActive();
 
-        if ( ! $activeCategory ) {
+        if (!$activeCategory) {
             return;
         }
 
@@ -115,9 +126,9 @@ class ProductSubscriber implements EventSubscriberInterface
      *
      * @param SalesChannelEntityLoadedEvent $event An event that contains the product entities being loaded.
      */
-    public function onProductsLoaded(SalesChannelEntityLoadedEvent $event)
+    public function onProductsLoaded(SalesChannelEntityLoadedEvent $event): void
     {
-        if ( $event->getContext()->getVersionId() !== Defaults::LIVE_VERSION ) {
+        if ($event->getContext()->getVersionId() !== Defaults::LIVE_VERSION) {
             return;
         }
 
@@ -156,20 +167,12 @@ class ProductSubscriber implements EventSubscriberInterface
      *
      * @param SalesChannelEntityLoadedEvent $event The event containing the entities and context.
      */
-    public function extendProductsWithFeatures(SalesChannelEntityLoadedEvent $event)
+    public function extendProductsWithFeatures(SalesChannelEntityLoadedEvent $event): void
     {
-        $criteria = new Criteria(['018caa63e3d5722c9f3bcbe91fb4c1b6']);
-        $listingFeatureSet = $this->featureSetRepository->search($criteria, $event->getContext())->first();
-
-        if (!$listingFeatureSet) {
-            return;
-        }
-
-        $this->productFeatureBuilder->prepare($event->getEntities(), $listingFeatureSet, $event->getSalesChannelContext());
-        $this->productFeatureBuilder->add($event->getEntities(), $listingFeatureSet);
+        $this->productFeatureBuilder->add($event->getEntities(), $event->getSalesChannelContext());
     }
 
-    public function onProductPageLoaded(ProductPageLoadedEvent $event)
+    public function onProductPageLoaded(ProductPageLoadedEvent $event): void
     {
         $page = $event->getPage();
         $salesChannelRulesIds = $event->getSalesChannelContext()->getRuleIds();
@@ -253,6 +256,7 @@ class ProductSubscriber implements EventSubscriberInterface
         $resolverContext = new ResolverContext($salesChannelContext, new Request());
 
         $this->resolver->resolve($cmsSlotCollection, $resolverContext);
+
 
         $event->getResult()->addExtension('alphaMarketingBanners', $cmsSlotCollection);
     }

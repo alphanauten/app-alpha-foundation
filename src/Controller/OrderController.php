@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[\Symfony\Component\Routing\Attribute\Route(defaults: ['_routeScope' => ['api']])]
 class OrderController extends AbstractController
 {
     /**
@@ -28,7 +28,7 @@ class OrderController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/api/_action/alpha-foundation/order/update', name: 'api.action.alpha-foundation.order.update', defaults: ['_acl' => ['admin']], methods: ['PUT'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/alpha-foundation/order/update', name: 'api.action.alpha-foundation.order.update', defaults: ['_acl' => ['admin']], methods: ['PUT'])]
     public function updatedOrderEvent(string $orderId, Request $request, Context $context): JsonResponse
     {
         $order = $this->orderRepository->search(new Criteria([$orderId]), $context)->first();

@@ -2,11 +2,10 @@
 
 namespace AlphaFoundation\Core\Content\Product;
 
-use Shopware\Core\Content\Product\Aggregate\ProductFeatureSet\ProductFeatureSetEntity;
+use AlphaFoundation\Core\Content\Product\ListingSetExtension\ListingSetExtensionDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Runtime;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class ProductExtension extends EntityExtension
@@ -14,16 +13,21 @@ class ProductExtension extends EntityExtension
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
-            (new ManyToOneAssociationField(
+            new OneToOneAssociationField(
                 'listingFeatureSet',
-                'listing_feature_set_id',
-                ProductFeatureSetEntity::class,
-            ))->addFlags(new Runtime())
+                'id',
+                'product_id',
+                ListingSetExtensionDefinition::class
+            )
         );
     }
 
     public function getDefinitionClass(): string
     {
         return ProductDefinition::class;
+    }
+    public function getEntityName(): string
+    {
+        return ProductDefinition::ENTITY_NAME;
     }
 }

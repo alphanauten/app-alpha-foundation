@@ -5,12 +5,12 @@ Component.extend('marketing-banner-create', 'marketing-banner-detail', {
 
    methods: {
        getBanner() {
-           this.element = this.repository.create(Shopware.Context.api);
+           this.element = this.bannerRepository.create(Shopware.Context.api);
        },
 
        onSave() {
            this.isLoading = true;
-           this.repository.save(this.element, Shopware.Context.api).then(() => {
+           this.bannerRepository.save(this.element, Shopware.Context.api).then(() => {
                this.$router.push({ name: 'marketing.banner.detail', params: { id: this.element.id }});
            }).catch((exception) => {
                this.createNotificationError({

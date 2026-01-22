@@ -1,12 +1,11 @@
 {% sw_extends '@Storefront/storefront/component/product/card/box-standard.html.twig' %}
 
+{# shopware-block: 4ccbdd8dedbb89b5d5c848a7303d780ad9127a8e8a1fc52ec0613031bcf98d79@v6.7.0.0 #}
 {% block component_product_box_variant_characteristics %}
     {{ parent() }}
-
-    {% if product.extensions.features is not empty %}
+    {% if product.extensions.listingFeatures is not empty %}
         {% sw_include '@Storefront/storefront/component/product/feature/list.html.twig' with {
-            'features': product.extensions.features
+            'features': product.extensions.listingFeatures
         } %}
     {% endif %}
-
 {% endblock %}

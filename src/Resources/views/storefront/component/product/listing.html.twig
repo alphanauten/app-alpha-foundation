@@ -1,16 +1,9 @@
 {% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
 
+{# shopware-block: 1f4bf311db232e7994fa672f97f4a66231f44700dc8fb2b2c48912dbedde14c9@v6.7.0.0 #}
 {% block element_product_listing_col %}
-    {% if page %}
-        {% set activeCategory = page.header.navigation.active %}
-        {% set banners = activeCategory.alphaMarketingBanners %}
-        {% set activeCategoryId = activeCategory.id %}
-    {% else %}
-        {% set activeCategory = app.request.attributes.get('navigationId') %}
-        {% set banners = searchResult.extensions.alphaMarketingBanners %}
-        {% set activeCategoryId = app.request.attributes.get('navigationId') %}
-    {% endif %}
-
+    {% set banners = element.data.listing.extensions.alphaMarketingBanners.elements %}
+    {% set activeCategoryId = page.navigationId %}
     {% if banners %}
         {% for banner in banners %}
             {% if activeCategoryId in banner.categories %}

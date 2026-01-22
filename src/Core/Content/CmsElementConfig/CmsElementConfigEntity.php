@@ -15,8 +15,8 @@ class CmsElementConfigEntity extends Entity
 
     protected ?string $name = null;
     protected ?string $type = null;
-    protected ?array $config;
-    protected ?array $data;
+    protected ?array $config = null;
+    protected ?array $data = null;
 
     public function getData(): ?array
     {
@@ -26,16 +26,6 @@ class CmsElementConfigEntity extends Entity
     public function setData(?array $data): void
     {
         $this->data = $data;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    public function setId(string $id): void
-    {
-        $this->id = $id;
     }
 
     public function getName(): ?string

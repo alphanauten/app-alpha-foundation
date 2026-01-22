@@ -16,27 +16,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class AlphaFoundation extends Plugin
 {
 
-
-    public function install(InstallContext $installContext): void
-    {
-        $this->getCustomFieldInstaller()->install($installContext);
-    }
-
-    public function update(UpdateContext $updateContext): void
-    {
-        $this->getCustomFieldInstaller()->update($updateContext);
-    }
-
-    public function postUpdate(UpdateContext $updateContext): void
-    {
-        $this->getCustomFieldInstaller()->cleanup($updateContext);
-    }
-
-    public function activate(ActivateContext $activateContext): void
-    {
-        $this->getCustomFieldInstaller()->activate($activateContext);
-    }
-
     public function deactivate(DeactivateContext $deactivateContext): void
     {
         $this->getCustomFieldInstaller()->deactivate($deactivateContext);
@@ -61,7 +40,7 @@ class AlphaFoundation extends Plugin
             $connection->executeStatement('ALTER TABLE `marketing_banner` DROP COLUMN `banner_condition`');
             $connection->executeStatement('ALTER TABLE `marketing_banner` DROP COLUMN `marketing_banner`');
             $connection->executeStatement('DROP TABLE `marketing_banner_property`');
-        } catch (\Exception $e) {
+        } catch (\Exception) {
 
         }
     }

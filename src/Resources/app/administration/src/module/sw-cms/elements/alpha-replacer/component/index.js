@@ -1,5 +1,5 @@
 const {Component, Mixin} = Shopware;
-const Criteria = Shopware.Data.Criteria;
+const { Criteria } = Shopware.Data;
 
 import template from './index.html.twig';
 import './index.scss';

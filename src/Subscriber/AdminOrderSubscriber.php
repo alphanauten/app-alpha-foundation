@@ -18,17 +18,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class AdminOrderSubscriber implements EventSubscriberInterface
 {
 
-    public function __construct(
-        private readonly RequestStack $requestStack,
-        private readonly AbstractPaymentMethodRoute $paymentMethodRoute,
-        private readonly AbstractShippingMethodRoute $shippingMethodRoute,
-        private readonly SalesChannelContextPersister $contextPersister,
-        private readonly EntityRepository $paymentMethodRepository,
-        private readonly EntityRepository $shippingMethodRepository,
-        private readonly Connection $connection,
-    ) {
-    }
-
     /**
      * @return string[]
      */
