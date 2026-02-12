@@ -69,7 +69,7 @@ class ProductFeatureBuilder
          * @var ListingSetExtensionEntity $listingSetExtension
          */
         $listingSetExtension = $product->getExtension('listingFeatureSet') ?? $product->getParent()?->getExtension('listingFeatureSet');
-        if (is_null($listingSetExtension)) {
+        if (is_null($listingSetExtension) || is_null($listingSetExtension->getListingFeatureSet())) {
             return new ArrayStruct();
         }
         $sortedFeatures = $listingSetExtension->getListingFeatureSet()->getFeatures();

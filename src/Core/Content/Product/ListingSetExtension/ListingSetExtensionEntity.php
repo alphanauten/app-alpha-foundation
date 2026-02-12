@@ -21,12 +21,12 @@ class ListingSetExtensionEntity extends Entity
         $this->product = $product;
     }
 
-    public function getListingFeatureSet(): ProductFeatureSetEntity
+    public function getListingFeatureSet(): ProductFeatureSetEntity|null
     {
         return $this->listingFeatureSet;
     }
 
-    public function setListingFeatureSet(ProductFeatureSetEntity $listingFeatureSet): void
+    public function setListingFeatureSet(ProductFeatureSetEntity|null $listingFeatureSet): void
     {
         $this->listingFeatureSet = $listingFeatureSet;
     }

@@ -1,0 +1,8 @@
+{% block sw_category_detail_information_type %}
+    {% parent %}
+    <mt-switch
+            v-if="category.extensions.reviewPoolMergeExtension"
+            v-model="category.extensions.reviewPoolMergeExtension.mergeReviewPools"
+            :label="$tc('category.mergeReviewPools')"
+    />
+{% endblock %}

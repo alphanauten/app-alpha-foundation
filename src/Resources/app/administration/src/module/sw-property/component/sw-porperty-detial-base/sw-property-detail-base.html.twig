@@ -1,0 +1,8 @@
+{% block sw_property_detail_sorting_display_container %}
+   {% parent %}
+    <mt-switch
+            v-if="propertyGroup.extensions?.reviewPoolMergeExtension"
+            v-model="propertyGroup.extensions.reviewPoolMergeExtension.mergeReviewPools"
+            :label="$tc('category.mergeReviewPools')"
+    />
+{% endblock %}
