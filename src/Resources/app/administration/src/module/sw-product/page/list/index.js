@@ -2,10 +2,8 @@
  * @package inventory
  */
 
-const { Context } = Shopware;
 import template from './sw-product-list.html.twig';
 
-// eslint-disable-next-line sw-deprecation-rules/private-feature-declarations
 Shopware.Component.override('pw-erp-warehouse-grid', {
     template,
 

@@ -29,4 +29,8 @@ class RuleExtension extends EntityExtension
     {
         return RuleDefinition::class;
     }
+    public function getEntityName(): string
+    {
+        return RuleDefinition::ENTITY_NAME;
+    }
 }

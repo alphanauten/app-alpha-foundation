@@ -4,10 +4,7 @@ import template from './sw-order-list.html.twig';
  * @package checkout
  */
 
-const { Mixin } = Shopware;
-const { Criteria } = Shopware.Data;
 
-// eslint-disable-next-line sw-deprecation-rules/private-feature-declarations
 Shopware.Component.override('sw-order-list', {
     template,
 
