@@ -1,0 +1,13 @@
+{% block sw_property_detail_sorting_display_container %}
+   {% parent %}
+      <sw-switch-field
+            v-if="propertyGroup.extensions?.reviewPoolMergeExtension"
+            v-model:value="propertyGroup.extensions.reviewPoolMergeExtension.mergeReviewPools"
+            :label="$tc('category.mergeReviewPools')"
+    />
+    <sw-switch-field
+            v-else
+            :label="$tc('category.mergeReviewPools')"
+            @update:value="onChangeMergeValue"
+    />
+{% endblock %}

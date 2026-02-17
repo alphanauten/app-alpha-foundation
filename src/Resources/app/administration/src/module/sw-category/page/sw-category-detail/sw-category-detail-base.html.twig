@@ -1,0 +1,13 @@
+{% block sw_category_detail_information_type %}
+    {% parent %}
+    <sw-switch-field
+            v-if="category.extensions.reviewPoolMergeExtension"
+            v-model:value="category.extensions.reviewPoolMergeExtension.mergeReviewPools"
+            :label="$tc('category.mergeReviewPools')"
+    />
+    <sw-switch-field
+            v-else
+            :label="$tc('category.mergeReviewPools')"
+            @update:value="onChangeMergeValue"
+    />
+{% endblock %}
