@@ -69,7 +69,7 @@ class ProductFeatureBuilder
          * @var ListingSetExtensionEntity $listingSetExtension
          */
         $listingSetExtension = $product->getExtension('listingFeatureSet') ?? $product->getParent()?->getExtension('listingFeatureSet');
-        if (is_null($listingSetExtension)) {
+        if (is_null($listingSetExtension) || is_null($listingSetExtension->getListingFeatureSet())) {
             return new ArrayStruct();
         }
         $sortedFeatures = $listingSetExtension->getListingFeatureSet()->getFeatures();
@@ -106,15 +106,13 @@ class ProductFeatureBuilder
         $required = [];
 
         $customFieldsSet = new ArrayStruct();
-
         /** @var SalesChannelProductEntity $product */
         foreach ($products as $product) {
-            if ($product === null || $product->getCustomFields() === null) {
+            if ($product === null || $product->getTranslated()['customFields'] === null) {
                 continue;
             }
 
-            $names = array_keys($product->getCustomFields());
-
+            $names = array_keys($product->getTranslated()['customFields']);
             foreach ($names as $name) {
                 if (!$this->isRequiredCustomField($name, $product)) {
                     continue;

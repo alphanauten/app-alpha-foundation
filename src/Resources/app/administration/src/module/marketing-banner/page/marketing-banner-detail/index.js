@@ -32,7 +32,8 @@ Component.register('marketing-banner-detail', {
             isLoading: false,
             isSaveSuccessful: false,
             categoriesCollection: null,
-            propertyGroupOptionCollection: null
+            propertyGroupOptionCollection: null,
+            languageCollection: null,
         };
     },
 
@@ -111,7 +112,6 @@ Component.register('marketing-banner-detail', {
 
             this.categoriesCollection = new EntityCollection('/category', 'category', Shopware.Context.api);
             this.propertyGroupOptionCollection = new EntityCollection('/property-group-option', 'property_group_option', Shopware.Context.api);
-
             await this.getBanner();
             await this.loadCategories();
             await this.loadPropertyGroupOptions();
@@ -129,6 +129,19 @@ Component.register('marketing-banner-detail', {
                 this.cmsDataResolverService.resolve({ sections: [{ blocks: [{ slots: [this.element] }] }] }).then(() => {
                     this.initElementConfig(this.element.type);
                     this.initElementData(this.element.type);
+                    for (let i = 0; i < this.element.translations.length; i++) {
+                        if (this.element.translations[i].languageId === Context.api.languageId) {
+                            const objArray = Object.entries(this.element.translations[i].config)
+                            for (let j = 0; j < objArray.length; j++) {
+                                if (this.element.config[(objArray[j][0])].value !== objArray[j][1].value) {
+                                    this.element.config = this.element.translations[i].config;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
                 }).catch((exception) => {
                     this.createNotificationError({
                         title: exception.message,
@@ -174,7 +187,7 @@ Component.register('marketing-banner-detail', {
 
         onSelectionAdd(category) {
             if (!this.element.categories) {
-                this.$set(this.element, 'categories', []);
+                this.element.categories = [];
             }
 
             this.element.categories.push(category.id);
@@ -182,7 +195,7 @@ Component.register('marketing-banner-detail', {
 
         onSelectionRemove(category) {
             if (!this.element.categories) {
-                this.$set(this.element, 'categories', []);
+                this.element.categories = [];
             }
 
             const index = this.element.categories.indexOf(category.id);
@@ -194,7 +207,7 @@ Component.register('marketing-banner-detail', {
 
         onPropertyGroupOptionAdd(propertyGroupOption) {
             if (!this.element.propertyGroupOptions) {
-                this.$set(this.element, 'propertyGroupOptions', []);
+                this.element.propertyGroupOptions = [];
             }
 
             this.element.propertyGroupOptions.push(propertyGroupOption.id);
@@ -202,7 +215,7 @@ Component.register('marketing-banner-detail', {
 
         onPropertyGroupOptionRemove(propertyGroupOption) {
             if (!this.element.propertyGroupOptions) {
-                this.$set(this.element, 'propertyGroupOptions', []);
+                this.element.propertyGroupOptions = [];
             }
 
             const index = this.element.propertyGroupOptions.indexOf(propertyGroupOption.id);
@@ -219,7 +232,6 @@ Component.register('marketing-banner-detail', {
         onSave() {
             this.isSaveSuccessful = false;
             this.isLoading = true;
-
             this.bannerRepository
                 .save(this.element, Context.api)
                 .then(() => {

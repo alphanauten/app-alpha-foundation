@@ -25,6 +25,22 @@
             <tag name="shopware.entity.extension"/>
         </service>
 
+        <service id="AlphaFoundation\Core\Content\Category\Extension\ReviewPoolMergeExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\Category\Extension\ReviewPoolMergeExtensionDefinition">
+            <tag name="shopware.entity.definition" entity="alpha_review_pool_merge_extension"/>
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\Property\Extension\PropertyReviewPoolMergeExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="AlphaFoundation\Core\Content\Property\Extension\PropertyReviewPoolMergeExtensionDefinition">
+            <tag name="shopware.entity.definition" entity="alpha_property_review_pool_merge_extension"/>
+        </service>
+
         <service id="AlphaFoundation\Core\Content\Product\ListingSetExtension\ListingSetExtensionDefinition">
             <tag name="shopware.entity.definition" entity="alpha_product_extension_listing_feature_set"/>
         </service>
@@ -49,6 +65,33 @@
 
         <service id="AlphaFoundation\Twig\SepaQRCode" public="true">
             <tag name="twig.extension"/> <!--Required-->
+        </service>
+
+        <service id="AlphaFoundation\Service\LeafCategoriesResolver" public="false"/>
+
+        <service id="AlphaFoundation\Core\Content\Product\SalesChannel\Review\AggregateProductReviewRoute"
+                 decorates="Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewRoute"
+                 public="true">
+            <argument type="service"
+                      id="AlphaFoundation\Core\Content\Product\SalesChannel\Review\AggregateProductReviewRoute.inner"/>
+            <argument type="service" id="product.repository"/>
+            <argument type="service" id="product_review.repository"/>
+            <argument type="service" id="property_group_option.repository"/>
+        </service>
+
+        <service class="AlphaFoundation\Core\Content\Product\DataAbstractionLayer\ReviewPoolMergingRatingAverageUpdater"
+                 id="Shopware\Core\Content\Product\DataAbstractionLayer\RatingAverageUpdater">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="monolog.logger"/>
+        </service>
+
+        <service class="AlphaFoundation\Resolver\CustomBuyBoxCmsElementResolver"
+                 id="Shopware\Core\Content\Product\Cms\BuyBoxCmsElementResolver">
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Detail\ProductConfiguratorLoader"/>
+            <argument type="service" id="product_review.repository"/>
+            <argument type="service"
+                      id="AlphaFoundation\Core\Content\Product\SalesChannel\Review\AggregateProductReviewRoute"/>
+            <tag name="shopware.cms.data_resolver"/>
         </service>
 
     </services>

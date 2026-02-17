@@ -13,3 +13,7 @@ import './module/sw-order/view/sw-order-product-select';
 
 import './module/sw-product/page/list';
 import './module/sw-product/component/sw-product-feature-set-form'
+
+import './module/sw-category/page/sw-category-detail'
+
+import './module/sw-property/component/sw-porperty-detial-base'
